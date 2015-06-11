@@ -1,20 +1,5 @@
-from main.scoville.device import Device
-
-__author__ = 'philip'
-
 import unittest
-
-class TestTransistor(Device):
-  id = "NPN_Transistor"
-  spiceModelName = "BC547B"
-  spiceModelData = "NPN ()"
-
-  def getSpiceData(self):
-    base = self.getSignal("G$1", "BASE")
-    collector = self.getSignal("G$1", "COLLECTOR")
-    emitter = self.getSignal("G$1", "EMITTER")
-    return "Q"+ self.name + " " + collector + " " + base + " " + emitter + " " + self.spiceModelName
-
+from test.testRessources.testDevices import TestTransistor
 
 
 class MyTestCase(unittest.TestCase):
