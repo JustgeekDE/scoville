@@ -1,3 +1,5 @@
+import untangle
+
 class EagleBoard:
   def __init__(self):
     self.devices = {}
@@ -8,3 +10,6 @@ class EagleBoard:
       self.deviceTypes[device.id] = device
     except:
       pass
+
+  def parseFile(self, xmlString):
+    xmlTree = untangle.parse(xmlString)
