@@ -1,6 +1,9 @@
 # IntelliJ
 .idea
 
+# Mac OS
+.DS_Store
+
 # Eagle
 .b#*
 .s#*
