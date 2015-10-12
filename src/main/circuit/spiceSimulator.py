@@ -1,49 +1,60 @@
-import os
+import os, subprocess
 from tempfile import mkstemp
 
+
 class SpiceSimulator:
-  @staticmethod
-  def run(circuit, signals):
-    descCircuit, circuitPath = mkstemp()
-    descData, dataPath = mkstemp()
+    @staticmethod
+    def run(circuit, signals, duration, step):
+        descCircuit, circuitPath = mkstemp()
+        descData, dataPath = mkstemp('.data')
 
-    circuit = SpiceSimulator.addControl(circuit, dataPath, signals)
+        circuit = SpiceSimulator.addControl(circuit, dataPath, signals, duration, step)
 
-    circuitFile = open(circuitPath, 'w')
-    circuitFile.write(circuit)
-    circuitFile.close()
+        circuitFile = open(circuitPath, 'w')
+        circuitFile.write(circuit)
+        circuitFile.close()
 
-    dataFile = open(dataPath, 'w')
-    data = dataFile.read()
+        process = subprocess.Popen('ngspice ' + circuitPath, shell=True, stdout=subprocess.PIPE)
+        process.wait()
 
-    os.close(descCircuit)
-    os.close(descData)
-    os.remove(circuitPath)
-    os.remove(dataPath)
+        dataFile = open(dataPath, 'r')
+        data = dataFile.read()
 
-    return data
+        os.close(descCircuit)
+        os.close(descData)
+        os.remove(circuitPath)
+        os.remove(dataPath)
 
-  @staticmethod
-  def addControl(circuit, outputFile, signals):
-    controlBlock = ".control\nset filetype=ascii\nrun"
-    controlBlock += "\nwrdata "+outputFile
-    for signal in signals:
-      controlBlock += " "+signal
-    controlBlock += "\n.endc"
-    circuit = circuit.replace(".end", controlBlock+"\n.end")
-    return circuit
+        data = SpiceSimulator.parseData(data, signals)
 
-  @staticmethod
-  def parseData(dataBlob, signals):
-    result = []
-    for line in dataBlob.split("\n"):
-      temp = {}
-      data = line.split()
-      timestamp = data[0]
-      i = 0
-      for signal in signals:
-        temp[signal] = float(data[(i*2) + 1])
-        i += 1
-      result.append((timestamp, temp))
+        return data
 
-    return result
+    @staticmethod
+    def addControl(circuit, outputFile, signals, duration, step):
+        outputFile = outputFile[:-len('.data')]
+        controlBlock = ""
+
+        controlBlock += ".tran " + str(step) + "ms " + str(duration) + "ms\n"
+        controlBlock += ".control\nset filetype=ascii\nrun\n"
+        controlBlock += "wrdata " + outputFile
+        for signal in signals:
+            controlBlock += " " + signal
+        controlBlock += "\n.endc"
+        circuit = circuit.replace(".end", controlBlock + "\n.end")
+        return circuit
+
+    @staticmethod
+    def parseData(dataBlob, signals):
+        result = []
+        for line in dataBlob.split("\n"):
+            temp = {}
+            data = line.split()
+            if len(data) == (2 * len(signals)):
+                timestamp = data[0]
+                i = 0
+                for signal in signals:
+                    temp[signal] = float(data[(i * 2) + 1])
+                    i += 1
+                result.append((timestamp, temp))
+
+        return result
