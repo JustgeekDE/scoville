@@ -15,4 +15,11 @@ Rpull VCC out 10k
 
 .model BC547B NPN ()
 
+.tran 1ms 100ms
+.options noacct
+.control
+set filetype=ascii
+run
+wrdata foo.txt v(ina) v(inb) v(out) i(Vs)
+.endc
 .end
