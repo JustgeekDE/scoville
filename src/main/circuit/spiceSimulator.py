@@ -42,7 +42,8 @@ class SpiceSimulator:
       timestamp = data[0]
       i = 0
       for signal in signals:
-        temp[signal] = data[(i*2) + 1]
+        temp[signal] = float(data[(i*2) + 1])
+        i += 1
       result.append((timestamp, temp))
 
     return result

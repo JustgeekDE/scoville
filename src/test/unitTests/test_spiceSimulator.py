@@ -24,3 +24,13 @@ class TestSpiceSimulator(TestCase):
         result = SpiceSimulator.parseData(exampleData, ['a', 'b'])
         self.assertEqual(len(result), 4)
 
+        self.assertEqual(result[0][1]['a'], 0.5)
+        self.assertEqual(result[1][1]['a'], 0.51)
+        self.assertEqual(result[2][1]['a'], 0.52)
+        self.assertEqual(result[3][1]['a'], 0.53)
+
+        self.assertEqual(result[0][1]['b'], 0.1)
+        self.assertEqual(result[1][1]['b'], 0.01)
+        self.assertEqual(result[2][1]['b'], 0.001)
+        self.assertEqual(result[3][1]['b'], 0.0001)
+
