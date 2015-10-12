@@ -3,8 +3,7 @@ from tempfile import mkstemp
 
 
 class SpiceSimulator:
-    @staticmethod
-    def run(circuit, signals, duration, step):
+    def run(self, circuit, signals, duration, step):
         descCircuit, circuitPath = mkstemp()
         descData, dataPath = mkstemp('.data')
 

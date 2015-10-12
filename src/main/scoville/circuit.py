@@ -1,4 +1,4 @@
-import uuid
+from scoville.spiceSimulator import SpiceSimulator
 
 
 class Circuit:
@@ -6,6 +6,7 @@ class Circuit:
     usedParts = []
     inspectedElements = []
     simulationTime = 0
+    simulator = SpiceSimulator()
 
     def __init__(self, circuitData):
         self.originalData = circuitData
@@ -32,6 +33,7 @@ class Circuit:
         return ""
 
     def run(self, duration=200, steps=1):
+        self.simulator.run(self.originalData, self.inspectedElements, duration, steps)
         return ""
 
     def getVoltage(self, signal):
