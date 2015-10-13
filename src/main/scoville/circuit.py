@@ -9,7 +9,7 @@ class Circuit:
 
         self.usedParts = []
         self.inspectedElements = []
-        self.mocks = []
+        self.mocks = {}
         self.simulator = SpiceSimulator()
         self.simulationResult = None
 
@@ -60,13 +60,13 @@ class Circuit:
 
     def getMocks(self):
         result = ""
-        for (signal, voltage, resistance) in self.mocks:
+        for (signal, voltage, resistance) in self.mocks.values():
             result += "Vmock{0} {0}MockR GND dc {1}V ac 0V\n".format(signal, voltage)
             result += "Rmock{0} {0}MockR {0} {1}\n".format(signal, resistance)
         return result
 
     def setVoltage(self, signal, voltage, resistance=0.0):
-        self.mocks.append((signal, voltage, resistance))
+        self.mocks[signal] = (signal, voltage, resistance)
 
     def getVoltage(self, signal):
         signal = "v({})".format(signal)

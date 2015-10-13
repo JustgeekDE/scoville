@@ -13,8 +13,8 @@ class SpiceSimulator:
         circuitFile.write("\n"+circuit)
         circuitFile.close()
 
-        process = subprocess.Popen('ngspice ' + circuitPath, shell=True, stdout=subprocess.PIPE)
-        process.wait()
+        returnCode = subprocess.call('ngspice ' + circuitPath, shell=True, stdout=subprocess.PIPE)
+        # assert returnCode == 0, "Execution of spice failed"
 
         dataFile = open(dataPath, 'r')
         data = dataFile.read()
