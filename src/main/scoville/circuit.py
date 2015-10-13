@@ -66,17 +66,25 @@ class Circuit:
 
     def getVoltage(self, signal):
         signal = "v({})".format(signal)
-        if len(self.simulationResult) > 0:
-            (timestamp, signals) = self.simulationResult[-1]
-            if signal in signals.keys():
-                return signals[signal]
-        return None
+        return self.getSignal(signal)
 
     def getMinVoltage(self, signal, start=0, end=None):
-        return ""
+        signal = "v({})".format(signal)
+        min = None
+        for (timestamp, data) in self.simulationResult:
+            if timestamp >= start and (end == None or timestamp <= end):
+                if data[signal] < min or min == None:
+                    min = data[signal]
+        return min
 
     def getMaxVoltage(self, signal, start=0, end=None):
-        return ""
+        signal = "v({})".format(signal)
+        max = None
+        for (timestamp, data) in self.simulationResult:
+            if timestamp >= start and (end == None or timestamp <= end):
+                if data[signal] > max:
+                    max = data[signal]
+        return max
 
     def getCurrent(self, signal):
         return ""
@@ -86,3 +94,11 @@ class Circuit:
 
     def getMaxCurrent(self, signal, start=0, end=None):
         return ""
+
+    def getSignal(self, signal):
+        if len(self.simulationResult) > 0:
+            (timestamp, signals) = self.simulationResult[-1]
+            if signal in signals.keys():
+                return signals[signal]
+        return None
+

@@ -64,10 +64,26 @@ class TestCircuit(TestCase):
         simulator.run.assert_called_once_with(AnyStringWith("VmockinA inAMockR GND dc 5.0V ac 0V"), Any(), Any(), Any())
         simulator.run.assert_called_once_with(AnyStringWith("RmockinA inAMockR inA 1000"), Any(), Any(), Any())
 
-    def testShouldAllowSignalInspection(self):
+    def testShouldAllowSingleSignalInspection(self):
         (circuit, simulator) = self.getExampleCircuit()
 
         circuit.run()
 
         self.assertEqual(circuit.getVoltage('a'), 4.0)
         self.assertEqual(circuit.getVoltage('b'), 2.0)
+
+    def testShouldAllowMaxSignalInspection(self):
+        (circuit, simulator) = self.getExampleCircuit()
+
+        circuit.run()
+
+        self.assertEqual(circuit.getMaxVoltage('b'), 5.0)
+        self.assertEqual(circuit.getMaxVoltage('a', 0, 2), 3.0)
+
+    def testShouldAllowMinSignalInspection(self):
+        (circuit, simulator) = self.getExampleCircuit()
+
+        circuit.run()
+
+        self.assertEqual(circuit.getMinVoltage('b'), 2.0)
+        self.assertEqual(circuit.getMinVoltage('a', 1, 4), 2.0)
