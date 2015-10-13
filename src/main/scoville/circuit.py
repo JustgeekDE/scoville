@@ -78,13 +78,16 @@ class Circuit:
         return self.getSignalForRange(signal, start, end, operator.gt)
 
     def getCurrent(self, signal):
-        return ""
+        signal = "i({})".format(signal)
+        return self.getSignal(signal)
 
     def getMinCurrent(self, signal, start=0, end=None):
-        return ""
+        signal = "i({})".format(signal)
+        return self.getSignalForRange(signal, start, end, operator.lt)
 
     def getMaxCurrent(self, signal, start=0, end=None):
-        return ""
+        signal = "i({})".format(signal)
+        return self.getSignalForRange(signal, start, end, operator.gt)
 
     def getSignal(self, signal):
         if len(self.simulationResult) > 0:
