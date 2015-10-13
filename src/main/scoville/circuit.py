@@ -3,16 +3,15 @@ from scoville.spiceSimulator import SpiceSimulator
 
 
 class Circuit:
-    originalData = ""
-    usedParts = []
-    inspectedElements = []
-    mocks = []
-    simulationTime = 0
-    simulator = SpiceSimulator()
-    simulationResult = None
 
     def __init__(self, circuitData):
         self.originalData = circuitData
+
+        self.usedParts = []
+        self.inspectedElements = []
+        self.mocks = []
+        self.simulator = SpiceSimulator()
+        self.simulationResult = None
 
     @staticmethod
     def fromFile(fileName):

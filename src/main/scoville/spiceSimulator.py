@@ -10,7 +10,7 @@ class SpiceSimulator:
         circuit = SpiceSimulator.addControl(circuit, dataPath, signals, duration, step)
 
         circuitFile = open(circuitPath, 'w')
-        circuitFile.write(circuit)
+        circuitFile.write("\n"+circuit)
         circuitFile.close()
 
         process = subprocess.Popen('ngspice ' + circuitPath, shell=True, stdout=subprocess.PIPE)
