@@ -8,6 +8,7 @@ class Circuit:
     mocks = []
     simulationTime = 0
     simulator = SpiceSimulator()
+    simulationResult = None
 
     def __init__(self, circuitData):
         self.originalData = circuitData
@@ -36,7 +37,7 @@ class Circuit:
         mocks = self.getMocks()
 
         circuit = mocks + strippedData
-        self.simulator.run(circuit, self.inspectedElements, duration, steps)
+        self.simulationResult = self.simulator.run(circuit, self.inspectedElements, duration, steps)
 
     def removeParts(self, circuit, partsToKeep):
         result = ""
@@ -64,7 +65,11 @@ class Circuit:
         self.mocks.append((signal, voltage, resistance))
 
     def getVoltage(self, signal):
-        return ""
+        if len(self.simulationResult) > 0:
+            (timestamp, signals) = self.simulationResult[-1]
+            if signal in signals.keys():
+                return signals[signal]
+        return None
 
     def getMinVoltage(self, signal, start=0, end=None):
         return ""

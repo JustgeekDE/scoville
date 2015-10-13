@@ -14,8 +14,14 @@ class TestCircuit(TestCase):
         return open("../testRessources/NAND.cir", 'r').read()
 
     def getExampleCircuit(self):
+        returnData = []
+        returnData.append((0, {'a': 1.0, 'b':5.0}))
+        returnData.append((1, {'a': 2.0, 'b':2.0}))
+        returnData.append((2, {'a': 3.0, 'b':5.0}))
+        returnData.append((3, {'a': 4.0, 'b':2.0}))
+
         simulator = SpiceSimulator()
-        simulator.run = MagicMock(return_value = [])
+        simulator.run = MagicMock(return_value = returnData)
 
         circuitDescription = self.getExampleDescription()
         circuit = Circuit(circuitDescription)
@@ -57,3 +63,10 @@ class TestCircuit(TestCase):
 
         simulator.run.assert_called_once_with(AnyStringWith("VmockinA inAMockR GND dc 5.0V ac 0V"), Any(), Any(), Any())
         simulator.run.assert_called_once_with(AnyStringWith("RmockinA inAMockR inA 1000"), Any(), Any(), Any())
+
+    def testShouldAllowSignalInspection(self):
+        (circuit, simulator) = self.getExampleCircuit()
+
+        circuit.run()
+
+        self.assertEqual(circuit.getVoltage('a'), 4.0)
