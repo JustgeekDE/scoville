@@ -39,14 +39,17 @@ class Circuit:
     def removeParts(self, circuit, partsToKeep):
         result = ""
         for line in circuit.splitlines():
-            line = line.strip()
-            if line.startswith('.') or line.startswith('*'):
+            if self.keepLine(line, partsToKeep):
                 result += "\n" + line
-                continue
-            if any(part+" " in line for part in partsToKeep):
-                result += "\n" + line
-                continue
         return result
+
+    def keepLine(self, line, partsToKeep):
+        line = line.strip()
+        if line.startswith('.') or line.startswith('*'):
+            return True
+        if any(part+" " in line for part in partsToKeep):
+            return True
+        return False
 
     def getVoltage(self, signal):
         return ""
