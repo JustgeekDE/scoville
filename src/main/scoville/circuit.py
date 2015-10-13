@@ -24,7 +24,7 @@ class Circuit:
 
     def use(self, parts):
         parts = self.convertToList(parts)
-        self.usedParts = self.usedParts.extend(parts)
+        self.usedParts.extend(parts)
 
     def inspect(self, signals):
         return ""
@@ -33,8 +33,20 @@ class Circuit:
         return ""
 
     def run(self, duration=200, steps=1):
-        self.simulator.run(self.originalData, self.inspectedElements, duration, steps)
-        return ""
+        strippedData = self.removeParts(self.originalData, self.usedParts)
+        self.simulator.run(strippedData, self.inspectedElements, duration, steps)
+
+    def removeParts(self, circuit, partsToKeep):
+        result = ""
+        for line in circuit.splitlines():
+            line = line.strip()
+            if line.startswith('.') or line.startswith('*'):
+                result += "\n" + line
+                continue
+            if any(part+" " in line for part in partsToKeep):
+                result += "\n" + line
+                continue
+        return result
 
     def getVoltage(self, signal):
         return ""

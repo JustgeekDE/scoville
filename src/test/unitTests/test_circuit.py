@@ -1,35 +1,46 @@
 from unittest import TestCase
 from mock import MagicMock
+from assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyListWith
 
 from scoville.circuit import Circuit
 from scoville.spiceSimulator import SpiceSimulator
 
 __author__ = 'ppeter'
 
+
+
 class TestCircuit(TestCase):
-    def getExamplecircuit(self):
+    def getExampleDescription(self):
         return open("../testRessources/NAND.cir", 'r').read()
 
-
-
-    def testShouldCallSimulator(self):
+    def getExampleCircuit(self):
         simulator = SpiceSimulator()
         simulator.run = MagicMock(return_value = [])
 
-        circuitDescription = self.getExamplecircuit()
+        circuitDescription = self.getExampleDescription()
         circuit = Circuit(circuitDescription)
         circuit.simulator = simulator
+
+        return (circuit, simulator)
+
+    def testShouldCallSimulator(self):
+        (circuit, simulator) = self.getExampleCircuit()
 
         circuit.run()
 
         self.assertTrue(simulator.run.called)
 
 
-    # def testShouldRemoveComponentsFromSimulation(self):
-    #     circuitDescription = self.getExamplecircuit()
-    #
-    #     circuit = Circuit(circuitDescription)
-    #     circuit.use("Qa")
+    def testShouldRemoveComponentsFromSimulation(self):
+        (circuit, simulator) = self.getExampleCircuit()
+
+        circuit.use("Qa")
+        circuit.run()
+
+        simulator.run.assert_called_once_with(AnyStringWith("Qa"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWithOut("Qb"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWithOut("Ra"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWithOut("Rb"), Any(), Any(), Any())
 
 
 
