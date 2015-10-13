@@ -3,6 +3,7 @@ from mock import MagicMock
 from assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyListWithString
 
 from scoville.circuit import Circuit
+from scoville.signal import SignalWithResistance
 from scoville.spiceSimulator import SpiceSimulator
 
 __author__ = 'ppeter'
@@ -67,7 +68,7 @@ class TestCircuit(TestCase):
     def testShouldMockSignalWithResistance(self):
         (circuit, simulator) = self.getExampleCircuit()
 
-        circuit.setVoltage("inA", 5.0, 1000)
+        circuit.setSignal(SignalWithResistance("inA", 5.0, 1000))
         circuit.run()
 
         simulator.run.assert_called_once_with(AnyStringWith("VmockinA inAMockR GND dc 5.0V ac 0V"), Any(), Any(), Any())

@@ -60,13 +60,12 @@ class Circuit:
 
     def getMocks(self):
         result = ""
-        for (signal, voltage, resistance) in self.mocks.values():
-            result += "Vmock{0} {0}MockR GND dc {1}V ac 0V\n".format(signal, voltage)
-            result += "Rmock{0} {0}MockR {0} {1}\n".format(signal, resistance)
+        for signal in self.mocks.values():
+            result += signal.getSpiceDefinition()
         return result
 
-    def setVoltage(self, signal, voltage, resistance=0.0):
-        self.mocks[signal] = (signal, voltage, resistance)
+    def setSignal(self, signal):
+        self.mocks[signal.name] = signal
 
     def getVoltage(self, signal):
         signal = "v({})".format(signal)
@@ -96,7 +95,7 @@ class Circuit:
         if len(self.simulationResult) > 0:
             (timestamp, signals) = self.simulationResult[-1]
             if signal in signals.keys():
-                return signals[signal]
+                return abs(float(signals[signal]))
         return None
 
     def getSignalForRange(self, signal, start, end, compOperation):
@@ -104,5 +103,5 @@ class Circuit:
         for (timestamp, data) in self.simulationResult:
             if timestamp >= start and (end == None or timestamp <= end):
                 if result == None or compOperation(data[signal], result):
-                    result = data[signal]
+                    result = abs(float(data[signal]))
         return result

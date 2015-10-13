@@ -49,7 +49,7 @@ class SpiceSimulator:
             temp = {}
             data = line.split()
             if len(data) == (2 * len(signals)):
-                timestamp = data[0]
+                timestamp = float(data[0])
                 i = 0
                 for signal in signals:
                     temp[signal] = float(data[(i * 2) + 1])
