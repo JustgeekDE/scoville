@@ -12,7 +12,6 @@ class SimulationUnitTest(unittest.TestCase):
         circuit.inspectVoltage('out')
 
         circuit.run(200)
-
         self.assertGreater(circuit.getVoltage('out'), 4.5)
 
     def testLowHighShouldResultInHigh(self):
@@ -23,7 +22,6 @@ class SimulationUnitTest(unittest.TestCase):
         circuit.inspectVoltage('out')
 
         circuit.run(200)
-
         self.assertGreater(circuit.getVoltage('out'), 4.5)
 
     def testHighLowShouldResultInHigh(self):
@@ -34,7 +32,6 @@ class SimulationUnitTest(unittest.TestCase):
         circuit.inspectVoltage('out')
 
         circuit.run(200)
-
         self.assertGreater(circuit.getVoltage('out'), 4.5)
 
     def testHighHighShouldResultInLow(self):
@@ -45,10 +42,29 @@ class SimulationUnitTest(unittest.TestCase):
         circuit.inspectVoltage('out')
 
         circuit.run(200)
-
         self.assertLess(circuit.getVoltage('out'), 0.5)
 
+    def testShouldNotUseTooMuchCurrent(self):
+        circuit = Circuit.fromFile("NAND.cir")
 
+        circuit.setVoltage('inA', 5)
+        circuit.setVoltage('inB', 5)
+        circuit.inspectCurrent('Vs')
+
+        circuit.run(200)
+        self.assertLess(circuit.getMaxCurrent('Vs'), 0.1)
+
+        circuit.setVoltage('inA', 0)
+        circuit.run(200)
+        self.assertLess(circuit.getMaxCurrent('Vs'), 0.1)
+
+        circuit.setVoltage('inB', 0)
+        circuit.run(200)
+        self.assertLess(circuit.getMaxCurrent('Vs'), 0.1)
+
+        circuit.setVoltage('inA', 5)
+        circuit.run(200)
+        self.assertLess(circuit.getMaxCurrent('Vs'), 0.001)
 
 if __name__ == '__main__':
     unittest.main()
