@@ -29,8 +29,10 @@ class Circuit:
         parts = self.convertToList(parts)
         self.usedParts.extend(parts)
 
-    def inspect(self, signal):
+    def inspectVoltage(self, signal):
         self.inspectedElements.append("v(" + signal + ")")
+
+    def inspectCurrent(self, signal):
         self.inspectedElements.append("i(" + signal + ")")
 
     def run(self, duration=200, steps=1):

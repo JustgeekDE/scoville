@@ -57,11 +57,12 @@ class TestCircuit(TestCase):
     def testShouldInspectBothCurrentAndVoltage(self):
         (circuit, simulator) = self.getExampleCircuit()
 
-        circuit.inspect("out")
+        circuit.inspectVoltage("out")
+        circuit.inspectCurrent("Vs")
         circuit.run()
 
         simulator.run.assert_called_once_with(Any(), AnyListWithString("v(out)"), Any(), Any())
-        simulator.run.assert_called_once_with(Any(), AnyListWithString("i(out)"), Any(), Any())
+        simulator.run.assert_called_once_with(Any(), AnyListWithString("i(Vs)"), Any(), Any())
 
     def testShouldMockSignalWithResistance(self):
         (circuit, simulator) = self.getExampleCircuit()
