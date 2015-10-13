@@ -56,7 +56,8 @@ class Circuit:
     def getMocks(self):
         result = ""
         for (signal, voltage, resistance) in self.mocks:
-            result += "Vmock{0} {0} GND dc {1}V ac 0V\n".format(signal, voltage)
+            result += "Vmock{0} {0}MockR GND dc {1}V ac 0V\n".format(signal, voltage)
+            result += "Rmock{0} {0}MockR {0} {1}\n".format(signal, resistance)
         return result
 
     def setVoltage(self, signal, voltage, resistance=0.0):

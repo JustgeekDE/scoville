@@ -49,12 +49,11 @@ class TestCircuit(TestCase):
         simulator.run.assert_called_once_with(Any(), AnyListWithString("v(out)"), Any(), Any())
         simulator.run.assert_called_once_with(Any(), AnyListWithString("i(out)"), Any(), Any())
 
-    def testShouldMockSignal(self):
+    def testShouldMockSignalWithResistance(self):
         (circuit, simulator) = self.getExampleCircuit()
 
-        circuit.setVoltage("inA", 5.0)
+        circuit.setVoltage("inA", 5.0, 1000)
         circuit.run()
 
-        simulator.run.assert_called_once_with(AnyStringWith("VmockinA inA GND dc 5.0V ac 0V"), Any(), Any(), Any())
-
-
+        simulator.run.assert_called_once_with(AnyStringWith("VmockinA inAMockR GND dc 5.0V ac 0V"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWith("RmockinA inAMockR inA 1000"), Any(), Any(), Any())
