@@ -26,11 +26,9 @@ class Circuit:
         parts = self.convertToList(parts)
         self.usedParts.extend(parts)
 
-    def inspect(self, signals):
-        return ""
-
-    def setVoltage(self, signal, voltage, resistance=0.0):
-        return ""
+    def inspect(self, signal):
+        self.inspectedElements.append("v("+signal+")")
+        self.inspectedElements.append("i("+signal+")")
 
     def run(self, duration=200, steps=1):
         strippedData = self.removeParts(self.originalData, self.usedParts)
@@ -50,6 +48,9 @@ class Circuit:
         if any(part+" " in line for part in partsToKeep):
             return True
         return False
+
+    def setVoltage(self, signal, voltage, resistance=0.0):
+        return ""
 
     def getVoltage(self, signal):
         return ""

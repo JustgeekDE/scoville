@@ -5,15 +5,17 @@ class Any(object):
 
 class AnyStringWith(str):
     def __eq__(self, other):
-        return self in other
+        assert self in other, "'%s' does not contain '%s'" % (other, self)
+        return True
 
 class AnyStringWithOut(str):
     def __eq__(self, other):
-        return not self in other
+        assert not self in other, "'%s' does contain '%s'" % (other, self)
+        return True
 
-class AnyListWith(object):
+class AnyListWithString(str):
     def __eq__(self, other):
-        if isinstance(other, list):
-            return self in other
-        return False
+        assert isinstance(other, list), "'%s' is not a list'" % (other)
+        assert str(self) in other, "'%s' is not in %s'" % (str(self), str(other))
+        return True
 

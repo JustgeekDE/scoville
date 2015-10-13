@@ -1,6 +1,6 @@
 from unittest import TestCase
 from mock import MagicMock
-from assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyListWith
+from assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyListWithString
 
 from scoville.circuit import Circuit
 from scoville.spiceSimulator import SpiceSimulator
@@ -25,9 +25,7 @@ class TestCircuit(TestCase):
 
     def testShouldCallSimulator(self):
         (circuit, simulator) = self.getExampleCircuit()
-
         circuit.run()
-
         self.assertTrue(simulator.run.called)
 
 
@@ -42,5 +40,13 @@ class TestCircuit(TestCase):
         simulator.run.assert_called_once_with(AnyStringWithOut("Ra"), Any(), Any(), Any())
         simulator.run.assert_called_once_with(AnyStringWithOut("Rb"), Any(), Any(), Any())
 
+    def testShouldInspectBothCurrentAndVoltage(self):
+        (circuit, simulator) = self.getExampleCircuit()
+
+        circuit.inspect("out")
+        circuit.run()
+
+        simulator.run.assert_called_once_with(Any(), AnyListWithString("v(out)"), Any(), Any())
+        simulator.run.assert_called_once_with(Any(), AnyListWithString("i(out)"), Any(), Any())
 
 
