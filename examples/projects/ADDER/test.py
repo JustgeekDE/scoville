@@ -16,6 +16,7 @@ class SimulationUnitTest(unittest.TestCase):
 
         circuit.inspectVoltage('XOR')
         circuit.inspectVoltage('NAND')
+        circuit.inspectVoltage('NOR')
         circuit.inspectVoltage('CARRY')
         circuit.inspectVoltage('SUM')
 
@@ -31,8 +32,31 @@ class SimulationUnitTest(unittest.TestCase):
         self.assertLess(circuit.getVoltage('CARRY'), 0.5)
         self.assertLess(circuit.getVoltage('SUM'), 0.5)
         self.assertGreater(circuit.getVoltage('NAND'), 4.5)
+        self.assertGreater(circuit.getVoltage('NOR'), 4.5)
         self.assertLess(circuit.getCurrent('Vs'), 0.1)
 
+    # def testAdderSingleBit(self):
+    #     circuit = self.setupCircuit()
+    #
+    #     circuit.setSignal(SignalWithResistance("A", 5.0, 10))
+    #     circuit.run(200)
+    #     self.assertLess(circuit.getVoltage('CARRY'), 0.5)
+    #     self.assertGreater(circuit.getVoltage('SUM'), 4.5)
+    #     self.assertLess(circuit.getCurrent('Vs'), 0.1)
+    #
+    #     circuit.setSignal(SignalWithResistance("A", 0.0, 10))
+    #     circuit.setSignal(SignalWithResistance("B", 5.0, 10))
+    #     circuit.run(200)
+    #     self.assertLess(circuit.getVoltage('CARRY'), 0.5)
+    #     self.assertGreater(circuit.getVoltage('SUM'), 4.5)
+    #     self.assertLess(circuit.getCurrent('Vs'), 0.1)
+    #
+    #     circuit.setSignal(SignalWithResistance("B", 0.0, 10))
+    #     circuit.setSignal(SignalWithResistance("C", 5.0, 10))
+    #     circuit.run(200)
+    #     self.assertLess(circuit.getVoltage('CARRY'), 0.5)
+    #     self.assertGreater(circuit.getVoltage('SUM'), 4.5)
+    #     self.assertLess(circuit.getCurrent('Vs'), 0.1)
 
 
 if __name__ == '__main__':
