@@ -65,6 +65,7 @@ class Circuit:
         self.mocks.append((signal, voltage, resistance))
 
     def getVoltage(self, signal):
+        signal = "v({})".format(signal)
         if len(self.simulationResult) > 0:
             (timestamp, signals) = self.simulationResult[-1]
             if signal in signals.keys():

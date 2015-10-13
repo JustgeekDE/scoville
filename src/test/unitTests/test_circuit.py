@@ -15,10 +15,10 @@ class TestCircuit(TestCase):
 
     def getExampleCircuit(self):
         returnData = []
-        returnData.append((0, {'a': 1.0, 'b':5.0}))
-        returnData.append((1, {'a': 2.0, 'b':2.0}))
-        returnData.append((2, {'a': 3.0, 'b':5.0}))
-        returnData.append((3, {'a': 4.0, 'b':2.0}))
+        returnData.append((0, {'v(a)': 1.0, 'v(b)':5.0,'i(a)': 0.0, 'i(b)':6.0}))
+        returnData.append((1, {'v(a)': 2.0, 'v(b)':2.0,'i(a)': 0.1, 'i(b)':0.0}))
+        returnData.append((2, {'v(a)': 3.0, 'v(b)':5.0,'i(a)': 0.2, 'i(b)':0.0}))
+        returnData.append((3, {'v(a)': 4.0, 'v(b)':2.0,'i(a)': 0.3, 'i(b)':6.0}))
 
         simulator = SpiceSimulator()
         simulator.run = MagicMock(return_value = returnData)
@@ -70,3 +70,4 @@ class TestCircuit(TestCase):
         circuit.run()
 
         self.assertEqual(circuit.getVoltage('a'), 4.0)
+        self.assertEqual(circuit.getVoltage('b'), 2.0)
