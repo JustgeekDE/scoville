@@ -41,6 +41,8 @@ class Circuit:
         self.simulationResult = self.simulator.run(circuit, self.inspectedElements, duration, steps)
 
     def removeParts(self, circuit, partsToKeep):
+        if len(partsToKeep) < 1:
+            return circuit
         result = ""
         for line in circuit.splitlines():
             if self.keepLine(line, partsToKeep):

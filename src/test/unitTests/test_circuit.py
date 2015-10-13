@@ -33,6 +33,16 @@ class TestCircuit(TestCase):
         circuit.run()
         self.assertTrue(simulator.run.called)
 
+    def testShouldNotRemoveComponentsFromSimulationIfNothingSpecified(self):
+        (circuit, simulator) = self.getExampleCircuit()
+
+        circuit.run()
+
+        simulator.run.assert_called_once_with(AnyStringWith("Qa"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWith("Qb"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWith("Ra"), Any(), Any(), Any())
+        simulator.run.assert_called_once_with(AnyStringWith("Rb"), Any(), Any(), Any())
+
     def testShouldRemoveComponentsFromSimulation(self):
         (circuit, simulator) = self.getExampleCircuit()
 
