@@ -30,8 +30,8 @@ class Circuit:
         self.usedParts.extend(parts)
 
     def inspect(self, signal):
-        self.inspectedElements.append("v("+signal+")")
-        self.inspectedElements.append("i("+signal+")")
+        self.inspectedElements.append("v(" + signal + ")")
+        self.inspectedElements.append("i(" + signal + ")")
 
     def run(self, duration=200, steps=1):
         strippedData = self.removeParts(self.originalData, self.usedParts)
@@ -51,7 +51,7 @@ class Circuit:
         line = line.strip()
         if line.startswith('.') or line.startswith('*'):
             return True
-        if any(part+" " in line for part in partsToKeep):
+        if any(part + " " in line for part in partsToKeep):
             return True
         return False
 

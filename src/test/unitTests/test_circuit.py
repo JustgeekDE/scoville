@@ -8,20 +8,19 @@ from scoville.spiceSimulator import SpiceSimulator
 __author__ = 'ppeter'
 
 
-
 class TestCircuit(TestCase):
     def getExampleDescription(self):
         return open("../testRessources/NAND.cir", 'r').read()
 
     def getExampleCircuit(self):
         returnData = []
-        returnData.append((0, {'v(a)': 1.0, 'v(b)':5.0,'i(a)': 0.0, 'i(b)':6.0}))
-        returnData.append((1, {'v(a)': 2.0, 'v(b)':2.0,'i(a)': 0.1, 'i(b)':0.0}))
-        returnData.append((2, {'v(a)': 3.0, 'v(b)':5.0,'i(a)': 0.2, 'i(b)':0.0}))
-        returnData.append((3, {'v(a)': 4.0, 'v(b)':2.0,'i(a)': 0.3, 'i(b)':6.0}))
+        returnData.append((0, {'v(a)': 1.0, 'v(b)': 5.0, 'i(a)': 0.0, 'i(b)': 6.0}))
+        returnData.append((1, {'v(a)': 2.0, 'v(b)': 2.0, 'i(a)': 0.1, 'i(b)': 0.0}))
+        returnData.append((2, {'v(a)': 3.0, 'v(b)': 5.0, 'i(a)': 0.2, 'i(b)': 0.0}))
+        returnData.append((3, {'v(a)': 4.0, 'v(b)': 2.0, 'i(a)': 0.3, 'i(b)': 6.0}))
 
         simulator = SpiceSimulator()
-        simulator.run = MagicMock(return_value = returnData)
+        simulator.run = MagicMock(return_value=returnData)
 
         circuitDescription = self.getExampleDescription()
         circuit = Circuit(circuitDescription)
@@ -33,7 +32,6 @@ class TestCircuit(TestCase):
         (circuit, simulator) = self.getExampleCircuit()
         circuit.run()
         self.assertTrue(simulator.run.called)
-
 
     def testShouldRemoveComponentsFromSimulation(self):
         (circuit, simulator) = self.getExampleCircuit()
