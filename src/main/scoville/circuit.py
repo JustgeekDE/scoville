@@ -1,3 +1,4 @@
+import operator
 from scoville.spiceSimulator import SpiceSimulator
 
 
@@ -70,21 +71,11 @@ class Circuit:
 
     def getMinVoltage(self, signal, start=0, end=None):
         signal = "v({})".format(signal)
-        min = None
-        for (timestamp, data) in self.simulationResult:
-            if timestamp >= start and (end == None or timestamp <= end):
-                if data[signal] < min or min == None:
-                    min = data[signal]
-        return min
+        return self.getSignalForRange(signal, start, end, operator.lt)
 
     def getMaxVoltage(self, signal, start=0, end=None):
         signal = "v({})".format(signal)
-        max = None
-        for (timestamp, data) in self.simulationResult:
-            if timestamp >= start and (end == None or timestamp <= end):
-                if data[signal] > max:
-                    max = data[signal]
-        return max
+        return self.getSignalForRange(signal, start, end, operator.gt)
 
     def getCurrent(self, signal):
         return ""
@@ -102,3 +93,10 @@ class Circuit:
                 return signals[signal]
         return None
 
+    def getSignalForRange(self, signal, start, end, compOperation):
+        result = None
+        for (timestamp, data) in self.simulationResult:
+            if timestamp >= start and (end == None or timestamp <= end):
+                if result == None or compOperation(data[signal], result):
+                    result = data[signal]
+        return result
