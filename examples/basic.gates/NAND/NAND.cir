@@ -1,0 +1,18 @@
+* EESchema Netlist Version 1.1 (Spice format) creation date: Wednesday, 14 October 2015 15:39:23
+
+* To exclude a component from the Spice Netlist add [Spice_Netlist_Enabled] user FIELD set to: N
+* To reorder the component spice node sequence add [Spice_Node_Sequence] user FIELD and define sequence: 2,1,0
+
+*Sheet Name:/
+R3  +5V NAND 10k
+R1  Net-_Q1-Pad2_ A 10k
+R2  Net-_Q2-Pad2_ B 10k
+R4  A GND 10MEG
+R5  B GND 10MEG
+Q1  NAND Net-_Q1-Pad2_ Net-_Q1-Pad3_ GND BC547B
+Q2  Net-_Q1-Pad3_ Net-_Q2-Pad2_ GND GND BC547B
+
+Vs +5v GND dc 5V ac 0V
+.model BC547B NPN ()
+
+.end
