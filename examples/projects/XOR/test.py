@@ -25,7 +25,7 @@ class SimulationUnitTest(unittest.TestCase):
 
         circuit.run(200)
         self.assertLess(circuit.getVoltage('AND'), 0.5)
-        self.assertGreater(circuit.getVoltage('NOR'), 4.5)
+        self.assertGreater(circuit.getVoltage('NOR'), 3.5)
         self.assertLess(circuit.getVoltage('XOR'), 0.5)
         self.assertLess(circuit.getCurrent('Vs'), 0.01)
 
@@ -54,14 +54,14 @@ class SimulationUnitTest(unittest.TestCase):
     def testBothHigh(self):
         circuit = self.setupCircuit()
 
-        circuit.setSignal(SignalWithResistance("A", 5.0, 10))
-        circuit.setSignal(SignalWithResistance("B", 5.0, 10))
+        circuit.setSignal(SignalWithResistance("A", 5.0, 1))
+        circuit.setSignal(SignalWithResistance("B", 5.0, 1))
 
         circuit.run(200)
-        self.assertGreater(circuit.getVoltage('AND'), 4.5)
+        self.assertGreater(circuit.getVoltage('AND'), 3.5)
         self.assertLess(circuit.getVoltage('NOR'), 0.5)
         self.assertLess(circuit.getVoltage('XOR'), 0.5)
-        self.assertLess(circuit.getCurrent('Vs'), 0.01)
+        self.assertLess(circuit.getCurrent('Vs'), 0.02)
 
 if __name__ == '__main__':
     unittest.main()

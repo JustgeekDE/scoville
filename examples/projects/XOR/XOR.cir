@@ -1,10 +1,10 @@
-*** Simple full adder ***
+*** Basic XOR ***
 
 * Supply
 Vs VCC GND dc 5V ac 0V
 
 * AND
-QA1 VCC A1b XA1e BC547B
+QA1 VCC A1b A1e BC547B
 QA2 A1e A2b AND BC547B
 
 RA1 A A1b 10k
