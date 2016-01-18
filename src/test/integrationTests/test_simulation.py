@@ -1,8 +1,8 @@
-import unittest
+from unittest import TestCase
 from scoville.spiceSimulator import SpiceSimulator
 
 
-class SimulationUnitTest(unittest.TestCase):
+class SimulationUnitTest(TestCase):
   def testSimulatesSingleNand(self):
     simulator = SpiceSimulator()
 
@@ -14,5 +14,3 @@ class SimulationUnitTest(unittest.TestCase):
     self.assertEqual(data[-1][1]['v(out)'], 5.0)
 
 
-if __name__ == '__main__':
-  unittest.main()
