@@ -74,7 +74,7 @@ class SimulationUnitTest(unittest.TestCase):
         circuit.setSignal(DelayedSignal("B", 5.0, delay=100, startValue=0, resistance=10))
         circuit.inspectVoltage('NAND')
 
-        circuit.run(200, 0.005)
+        circuit.run(200, 0.05)
         self.assertGreater(circuit.getMinVoltage('NAND', 0.1, 100), 4.5)
         self.assertLess(circuit.getMaxVoltage('NAND', 100.05, 200), 0.5)
 
