@@ -67,25 +67,28 @@ class SimulationUnitTest(unittest.TestCase):
         circuit.run(200)
         self.assertLess(circuit.getMaxCurrent('Vs'), 0.001)
 
-    def testShouldSwitchOffIn100ns(self):
+    def testShouldSwitchOffIn50ns(self):
         circuit = Circuit.fromFile("NAND.cir")
 
         circuit.setSignal(SignalWithResistance("A", 5.0, 10))
-        circuit.setSignal(DelayedSignal("B", 5.0, 100, 10))
+        circuit.setSignal(DelayedSignal("B", 5.0, delay=100, startValue=0, resistance=10))
         circuit.inspectVoltage('NAND')
 
-        circuit.run(200, 0.1)
-        self.assertLess(circuit.getMaxVoltage('NAND', 100.1, 200), 0.5)
+        circuit.run(200, 0.005)
+        self.assertGreater(circuit.getMinVoltage('NAND', 0.1, 100), 4.5)
+        self.assertLess(circuit.getMaxVoltage('NAND', 100.05, 200), 0.5)
 
-    def testShouldSwitchOnIn100ns(self):
+
+    def testShouldSwitchOnIn50ns(self):
         circuit = Circuit.fromFile("NAND.cir")
 
         circuit.setSignal(SignalWithResistance("A", 5.0, 10))
         circuit.setSignal(DelayedSignal("B", value=0.0, delay=100, resistance=10, startValue=5.0))
         circuit.inspectVoltage('NAND')
 
-        circuit.run(200, 0.1)
-        self.assertGreater(circuit.getMinVoltage('NAND', 100.1, 200), 4.5)
+        circuit.run(200, 0.05)
+        self.assertLess(circuit.getMaxVoltage('NAND', 0.1, 100), 0.5)
+        self.assertGreater(circuit.getMinVoltage('NAND', 100.05, 200), 4.5)
 
 
 if __name__ == '__main__':
