@@ -6,7 +6,18 @@ class EagleSchematic:
 
 
   def getSpiceData(self):
-    return ""
+    netLists = []
+    models = set()
+
+    parts = self._getParts()
+    for part in parts:
+      netLists.append(self._getSpiceNetlistForPart(part))
+      models.add(self._getSpiceModelForPart(part))
+
+    netList = "\n".join(netLists)
+    models = "\n".join(models)
+
+    return netList + "\n" + models
 
   def _getParts(self):
     return self.xml.getElementsByTagName('part')

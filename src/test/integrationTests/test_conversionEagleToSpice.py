@@ -1,17 +1,17 @@
 from unittest import TestCase
 from helper.eagleSchematic import EagleSchematic
-from assertionMatchers import AnyStringWith
+from assertionMatchers import AnyStringWith, AnyListWithString
 
 
 class ConversionTest(TestCase):
-  def ignore_ConvertingSingleTransistor(self):
+  def test_ConvertingSingleTransistor(self):
 
     inputData = open("../testRessources/singleTransistor.sch", 'r').read()
     circuit = EagleSchematic(inputData)
 
-    result = circuit.getSpiceData()
+    result = circuit.getSpiceData().split("\n")
 
-    self.assertEqual(AnyStringWith("QQ1"), result)
-    self.assertGreater(len(result), 5)
+    self.assertEqual(AnyListWithString("QQ1 COLLECTOR BASE EMITTER BC547"), result)
+    self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
 
 
