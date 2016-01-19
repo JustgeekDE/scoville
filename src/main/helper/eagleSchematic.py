@@ -73,6 +73,10 @@ class EagleSchematic:
 
   def _getSpiceModelForPart(self, part):
     spiceModel = self._getAttributeValueForPart(part, 'SV_SPICE_MODEL')
+
+    if spiceModel == '':
+      return ''
+
     partValue = part.getAttribute('value')
 
     return '.model ' + partValue + ' ' + spiceModel

@@ -64,3 +64,4 @@ class ConversionTest(TestCase):
     spiceData = circuit._getSpiceModelForPart(transistor)
 
     self.assertEqual(spiceData, ".model BC547 NPN ()")
+
