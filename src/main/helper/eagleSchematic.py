@@ -26,14 +26,16 @@ class EagleSchematic:
     return self.xml.getElementsByTagName('deviceset')
 
   def _getDeviceAttributes(self, part):
-    devices = self._getDevices()
+    library = self._getNodeWithTagAndName('library', part.getAttribute('library'))
+    deviceset = self._getNodeWithTagAndName('deviceset', part.getAttribute('deviceset'), library)
+    device = self._getNodeWithTagAndName('device', part.getAttribute('device'), deviceset)
+    technology = self._getNodeWithTagAndName('technology', part.getAttribute('technology'), device)
 
-    for deviceset in devices:
-      if deviceset.getAttribute('name') == part.getAttribute('deviceset'):
-        for device in deviceset.getElementsByTagName('device'):
-          if device.getAttribute('name') == part.getAttribute('device'):
-            defaultTechnology = device.getElementsByTagName('technology')[0]
-            return defaultTechnology.getElementsByTagName('attribute')
+    if technology == None:
+      technology = device.getElementsByTagName('technology')[0]
+
+    if technology != None:
+      return technology.getElementsByTagName('attribute')
 
     return []
 
@@ -80,3 +82,14 @@ class EagleSchematic:
     partValue = part.getAttribute('value')
 
     return '.model ' + partValue + ' ' + spiceModel
+
+  def _getNodeWithTagAndName(self, tag, name, root = None):
+    if root == None:
+      root = self.xml
+
+    nodes = root.getElementsByTagName(tag)
+    for node in nodes:
+      if node.getAttribute('name') == name:
+        return node
+    return None
+
