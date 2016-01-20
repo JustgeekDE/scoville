@@ -25,3 +25,14 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString("QQ1 COLLECTOR BASE GND BC547"), result)
     self.assertEqual(AnyListWithString("RR1 COLLECTOR +5V 10k"), result)
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
+
+  def test_ConvertingWithVoltageSource(self):
+    inputData = resource_string('test', 'testRessources/transistorAndResistorWithSupply.sch')
+    circuit = EagleSchematic(inputData)
+
+    result = circuit.getSpiceData().split("\n")
+
+    self.assertEqual(AnyListWithString("VP5V +5V GND dc +5V ac 0V"), result)
+    self.assertEqual(AnyListWithString("QQ1 COLLECTOR BASE GND BC547"), result)
+    self.assertEqual(AnyListWithString("RR1 COLLECTOR +5V 10k"), result)
+    self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)

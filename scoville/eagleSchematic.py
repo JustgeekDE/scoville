@@ -4,26 +4,28 @@ class EagleSchematic:
   def __init__(self, xmlString):
     self.xml = parseString(xmlString)
 
+  @staticmethod
+  def conditionalAdd(collection, value):
+    if value != None:
+          collection.add(value)
+
 
   def getSpiceData(self):
-    netLists = []
+    netLists = set()
     models = set()
+    voltageSources = set()
 
     parts = self._getParts()
     for part in parts:
-
-      netList = self._getSpiceNetlistForPart(part)
-      if netList != None:
-        netLists.append(netList)
-
-      model = self._getSpiceModelForPart(part)
-      if model != None:
-        models.add(model)
+      self.conditionalAdd(voltageSources, self._getSpiceSupplyForPart(part))
+      self.conditionalAdd(netLists, self._getSpiceNetlistForPart(part))
+      self.conditionalAdd(models, self._getSpiceModelForPart(part))
 
     netList = "\n".join(netLists)
     models = "\n".join(models)
+    voltageSources = "\n".join(voltageSources)
 
-    return netList + "\n" + models
+    return voltageSources + "\n" + netList + "\n" + models
 
   def _getParts(self):
     return self.xml.getElementsByTagName('part')
