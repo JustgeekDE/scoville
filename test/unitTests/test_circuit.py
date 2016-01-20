@@ -1,7 +1,9 @@
 from unittest import TestCase
-from mock import MagicMock
-from assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyListWithString
+from pkg_resources import resource_string
 
+from mock import MagicMock
+
+from test.assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyListWithString
 from scoville.circuit import Circuit
 from scoville.signal import SignalWithResistance
 from scoville.spiceSimulator import SpiceSimulator
@@ -11,7 +13,7 @@ __author__ = 'ppeter'
 
 class TestCircuit(TestCase):
   def getExampleDescription(self):
-    return open("../testRessources/NAND.cir", 'r').read()
+    return resource_string('test', "testRessources/NAND.cir")
 
   def getExampleCircuit(self):
     returnData = []

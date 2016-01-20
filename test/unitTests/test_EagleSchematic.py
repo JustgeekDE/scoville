@@ -1,12 +1,16 @@
 from unittest import TestCase
-from helper.eagleSchematic import EagleSchematic
-from assertionMatchers import AnyStringWith
+from pkg_resources import resource_string
+
+from scoville.eagleSchematic import EagleSchematic
 
 
 class ConversionTest(TestCase):
 
+  def singleTransistorSchematic(self):
+    return resource_string('test', "testRessources/singleTransistor.sch")
+
   def test_extractSinglePartCorrectly(self):
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+    inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
 
     parts = circuit._getParts()
@@ -14,9 +18,8 @@ class ConversionTest(TestCase):
     self.assertEqual(len(parts), 1)
     self.assertEqual(parts[0].getAttribute('name'), 'Q1')
 
-
   def test_extractSingleDeviceCorrectly(self):
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+    inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
 
     devices = circuit._getDevices()
@@ -26,7 +29,7 @@ class ConversionTest(TestCase):
 
 
   def test_getDeviceForPart(self):
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+    inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
 
     transistor = circuit._getParts()[0]
@@ -35,7 +38,7 @@ class ConversionTest(TestCase):
     self.assertEqual(len(attributes), 3)
 
   def test_getNetMapForPart(self):
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+    inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
 
     transistor = circuit._getParts()[0]
@@ -47,7 +50,7 @@ class ConversionTest(TestCase):
     self.assertEqual(netMap['EMITTER'], 'EMITTER')
 
   def test_getSpiceNetlistForPart(self):
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+    inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
 
     transistor = circuit._getParts()[0]
@@ -57,7 +60,7 @@ class ConversionTest(TestCase):
 
 
   def test_getSpiceModelForPart(self):
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+    inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
 
     transistor = circuit._getParts()[0]

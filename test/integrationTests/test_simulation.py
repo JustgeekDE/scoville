@@ -1,4 +1,6 @@
 from unittest import TestCase
+from pkg_resources import resource_string
+
 from scoville.spiceSimulator import SpiceSimulator
 
 
@@ -6,7 +8,8 @@ class SimulationUnitTest(TestCase):
   def testSimulatesSingleNand(self):
     simulator = SpiceSimulator()
 
-    circuit = open("../testRessources/NAND.cir", 'r').read()
+    circuit = resource_string('test', 'testRessources/NAND.cir')
+
     data = simulator.run(circuit, ["v(out)", "i(Vs)"], 5, 1)
 
     self.assertGreater(len(data), 5)

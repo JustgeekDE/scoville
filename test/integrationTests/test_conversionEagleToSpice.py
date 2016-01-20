@@ -1,12 +1,14 @@
 from unittest import TestCase
-from helper.eagleSchematic import EagleSchematic
-from assertionMatchers import AnyStringWith, AnyListWithString
+from pkg_resources import resource_string
+
+from test.assertionMatchers import AnyListWithString
+from scoville.eagleSchematic import EagleSchematic
 
 
 class ConversionTest(TestCase):
-  def test_ConvertingSingleTransistor(self):
 
-    inputData = open("../testRessources/singleTransistor.sch", 'r').read()
+  def test_ConvertingSingleTransistor(self):
+    inputData = resource_string('test', 'testRessources/singleTransistor.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
@@ -14,10 +16,8 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString("QQ1 COLLECTOR BASE EMITTER BC547"), result)
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
 
-
   def test_ConvertingTwoParts(self):
-
-    inputData = open("../testRessources/transistorAndResistor.sch", 'r').read()
+    inputData = resource_string('test', 'testRessources/transistorAndResistor.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
@@ -25,5 +25,3 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString("QQ1 COLLECTOR BASE GND BC547"), result)
     self.assertEqual(AnyListWithString("RR1 COLLECTOR +5V 10k"), result)
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
-
-

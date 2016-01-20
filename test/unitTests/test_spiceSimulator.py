@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 from scoville.spiceSimulator import SpiceSimulator
 
 __author__ = 'ppeter'

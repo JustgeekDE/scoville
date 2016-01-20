@@ -1,7 +1,7 @@
 import unittest
 
-from scoville.circuit import Circuit
-from scoville.signal import SignalWithResistance, DelayedSignal
+from scoville import Circuit
+from scoville import SignalWithResistance, DelayedSignal
 
 
 class SimulationUnitTest(unittest.TestCase):
