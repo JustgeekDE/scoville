@@ -11,8 +11,14 @@ class EagleSchematic:
 
     parts = self._getParts()
     for part in parts:
-      netLists.append(self._getSpiceNetlistForPart(part))
-      models.add(self._getSpiceModelForPart(part))
+
+      netList = self._getSpiceNetlistForPart(part)
+      if netList != None:
+        netLists.append(netList)
+
+      model = self._getSpiceModelForPart(part)
+      if model != None:
+        models.add(model)
 
     netList = "\n".join(netLists)
     models = "\n".join(models)
@@ -40,6 +46,9 @@ class EagleSchematic:
     return []
 
   def _getSpiceNetlistForPart(self, part):
+    if self._getSpiceSupplyForPart(part) != None:
+      return None
+
     netMap = self._getNetMapForPart(part)
     spicePrefix = self._getAttributeValueForPart(part, "SV_SPICE_PREFIX")
     spiceOrder = self._getAttributeValueForPart(part, "SV_SPICE_ORDER").split(';')
@@ -51,6 +60,19 @@ class EagleSchematic:
       netList += netMap[pin] + ' '
 
     return spicePrefix + partName + ' ' + netList + partValue
+
+  def _getSpiceSupplyForPart(self, part):
+    partLibrary = part.getAttribute('library')
+    if partLibrary not in ['supply1', 'supply2']:
+      return None
+
+    voltage = part.getAttribute('deviceset')
+    name = voltage.replace('+', 'P').replace('-', 'M')
+    connection = ' '.join(self._getNetMapForPart(part).values())
+
+
+    return 'V'+name+' '+ connection + ' GND dc ' + voltage + ' ac 0V'
+
 
   def _getAttributeValueForPart(self, part, attributeName):
     attributes = self._getDeviceAttributes(part)
@@ -77,7 +99,7 @@ class EagleSchematic:
     spiceModel = self._getAttributeValueForPart(part, 'SV_SPICE_MODEL')
 
     if spiceModel == '':
-      return ''
+      return None
 
     partValue = part.getAttribute('value')
 

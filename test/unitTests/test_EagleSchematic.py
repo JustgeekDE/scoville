@@ -37,6 +37,7 @@ class ConversionTest(TestCase):
 
     self.assertEqual(len(attributes), 3)
 
+
   def test_getNetMapForPart(self):
     inputData = self.singleTransistorSchematic()
     circuit = EagleSchematic(inputData)
@@ -48,6 +49,7 @@ class ConversionTest(TestCase):
     self.assertEqual(netMap['COLLECTOR'], 'COLLECTOR')
     self.assertEqual(netMap['BASE'], 'BASE')
     self.assertEqual(netMap['EMITTER'], 'EMITTER')
+
 
   def test_getSpiceNetlistForPart(self):
     inputData = self.singleTransistorSchematic()
@@ -68,3 +70,16 @@ class ConversionTest(TestCase):
 
     self.assertEqual(spiceData, ".model BC547 NPN ()")
 
+
+  def test_getSpiceModelForSupplyPart(self):
+    inputData = resource_string('test', "testRessources/transistorAndResistorWithSupply.sch")
+    circuit = EagleSchematic(inputData)
+
+    transistor  = circuit._getNodeWithTagAndName('part', 'P+1')
+    spiceModel  = circuit._getSpiceModelForPart(transistor)
+    spiceNet    = circuit._getSpiceNetlistForPart(transistor)
+    spiceSupply = circuit._getSpiceSupplyForPart(transistor)
+
+    self.assertEqual(spiceModel, None)
+    self.assertEqual(spiceNet, None)
+    self.assertEqual(spiceSupply, "VP5V +5V GND dc +5V ac 0V")
