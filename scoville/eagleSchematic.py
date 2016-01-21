@@ -48,17 +48,15 @@ class EagleSchematic:
     return []
 
   def _getSpiceNetlistForPart(self, part):
-    if self._isSupplyPart(part):
-      return None
-
-    if self._getSpiceModelForPart(part) == None:
-      return None
 
     netMap = self._getNetMapForPart(part)
     spicePrefix = self._getAttributeValueForPart(part, "SV_SPICE_PREFIX")
     spiceOrder = self._getAttributeValueForPart(part, "SV_SPICE_ORDER").split(';')
     partName = part.getAttribute('name')
     partValue = part.getAttribute('value')
+
+    if spicePrefix == '':
+      return None
 
     netList = ''
     for pin in spiceOrder:
