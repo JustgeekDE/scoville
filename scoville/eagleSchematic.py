@@ -25,7 +25,7 @@ class EagleSchematic:
     models = "\n".join(models)
     voltageSources = "\n".join(voltageSources)
 
-    return voltageSources + "\n" + netList + "\n" + models
+    return voltageSources + "\n" + netList + "\n" + models + "\n.end"
 
   def _getParts(self):
     return self.xml.getElementsByTagName('part')

@@ -36,3 +36,11 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString("QQ1 COLLECTOR BASE GND BC547"), result)
     self.assertEqual(AnyListWithString("RR1 COLLECTOR +5V 10k"), result)
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
+
+  def test_ConversionShouldIncludeEndTag(self):
+    inputData = resource_string('test', 'testRessources/singleTransistor.sch')
+    circuit = EagleSchematic(inputData)
+
+    result = circuit.getSpiceData().split("\n")
+
+    self.assertEqual('.end', result[-1])
