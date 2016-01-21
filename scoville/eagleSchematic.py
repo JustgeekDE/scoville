@@ -51,6 +51,9 @@ class EagleSchematic:
     if self._isSupplyPart(part):
       return None
 
+    if self._getSpiceModelForPart(part) == None:
+      return None
+
     netMap = self._getNetMapForPart(part)
     spicePrefix = self._getAttributeValueForPart(part, "SV_SPICE_PREFIX")
     spiceOrder = self._getAttributeValueForPart(part, "SV_SPICE_ORDER").split(';')

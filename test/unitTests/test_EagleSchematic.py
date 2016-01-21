@@ -96,3 +96,16 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceModel, None)
     self.assertEqual(spiceNet, None)
     self.assertEqual(spiceSupply, None)
+
+  def test_shouldNotCreateModelForUnknowNode(self):
+    inputData = resource_string('test', "testRessources/transistorAndResistorWithSupplyAndTestPoint.sch")
+    circuit = EagleSchematic(inputData)
+
+    negativeSupply  = circuit._getNodeWithTagAndName('part', 'TP1')
+    spiceModel  = circuit._getSpiceModelForPart(negativeSupply)
+    spiceNet    = circuit._getSpiceNetlistForPart(negativeSupply)
+    spiceSupply = circuit._getSpiceSupplyForPart(negativeSupply)
+
+    self.assertEqual(spiceModel, None)
+    self.assertEqual(spiceNet, None)
+    self.assertEqual(spiceSupply, None)
