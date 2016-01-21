@@ -48,7 +48,7 @@ class EagleSchematic:
     return []
 
   def _getSpiceNetlistForPart(self, part):
-    if self._getSpiceSupplyForPart(part) != None:
+    if self._isSupplyPart(part):
       return None
 
     netMap = self._getNetMapForPart(part)
@@ -64,14 +64,15 @@ class EagleSchematic:
     return spicePrefix + partName + ' ' + netList + partValue
 
   def _getSpiceSupplyForPart(self, part):
-    partLibrary = part.getAttribute('library')
-    if partLibrary not in ['supply1', 'supply2']:
+    if not self._isSupplyPart(part):
       return None
 
     voltage = part.getAttribute('deviceset')
     name = voltage.replace('+', 'P').replace('-', 'M')
     connection = ' '.join(self._getNetMapForPart(part).values())
 
+    if 'GND' in voltage:
+      return None
 
     return 'V'+name+' '+ connection + ' GND dc ' + voltage + ' ac 0V'
 
@@ -117,3 +118,6 @@ class EagleSchematic:
         return node
     return None
 
+  def _isSupplyPart(self, part):
+    partLibrary = part.getAttribute('library')
+    return partLibrary in ['supply1', 'supply2']

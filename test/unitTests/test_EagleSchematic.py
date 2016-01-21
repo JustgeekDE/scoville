@@ -75,11 +75,24 @@ class ConversionTest(TestCase):
     inputData = resource_string('test', "testRessources/transistorAndResistorWithSupply.sch")
     circuit = EagleSchematic(inputData)
 
-    transistor  = circuit._getNodeWithTagAndName('part', 'P+1')
-    spiceModel  = circuit._getSpiceModelForPart(transistor)
-    spiceNet    = circuit._getSpiceNetlistForPart(transistor)
-    spiceSupply = circuit._getSpiceSupplyForPart(transistor)
+    positiveSupply  = circuit._getNodeWithTagAndName('part', 'P+1')
+    spiceModel  = circuit._getSpiceModelForPart(positiveSupply)
+    spiceNet    = circuit._getSpiceNetlistForPart(positiveSupply)
+    spiceSupply = circuit._getSpiceSupplyForPart(positiveSupply)
 
     self.assertEqual(spiceModel, None)
     self.assertEqual(spiceNet, None)
     self.assertEqual(spiceSupply, "VP5V +5V GND dc +5V ac 0V")
+
+  def test_shouldNotCreateSupplyForGNDNode(self):
+    inputData = resource_string('test', "testRessources/transistorAndResistorWithSupply.sch")
+    circuit = EagleSchematic(inputData)
+
+    negativeSupply  = circuit._getNodeWithTagAndName('part', 'GND1')
+    spiceModel  = circuit._getSpiceModelForPart(negativeSupply)
+    spiceNet    = circuit._getSpiceNetlistForPart(negativeSupply)
+    spiceSupply = circuit._getSpiceSupplyForPart(negativeSupply)
+
+    self.assertEqual(spiceModel, None)
+    self.assertEqual(spiceNet, None)
+    self.assertEqual(spiceSupply, None)
