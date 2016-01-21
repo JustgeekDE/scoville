@@ -1,7 +1,7 @@
 import os, subprocess
 from tempfile import mkstemp
 
-NS_PER_SECOND = 1000000
+NS_PER_SECOND = 1000**3
 
 
 class SpiceSimulator:

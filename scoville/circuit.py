@@ -33,7 +33,7 @@ class Circuit:
   def inspectCurrent(self, signal):
     self.inspectedElements.append("i(" + signal + ")")
 
-  def run(self, duration=200, steps=0.1):
+  def run(self, duration=5, steps=0.01):
     strippedData = self.removeParts(self.originalData, self.usedParts)
     mocks = self.getMocks()
 
