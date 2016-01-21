@@ -28,6 +28,6 @@ class DelayedSignal(GenericSignal):
     self.resistance = resistance
 
   def getSpiceDefinition(self):
-    result = "Vmock{0} {0}MockR GND dc PULSE({3}V {1}V {2}ms) ac 0v\n".format(self.name, self.value, self.delay, self.startValue)
+    result = "Vmock{0} {0}MockR GND dc PULSE({3}V {1}V {2}ns) ac 0v\n".format(self.name, self.value, self.delay, self.startValue)
     result += "Rmock{0} {0}MockR {0} {1}\n".format(self.name, self.resistance)
     return result

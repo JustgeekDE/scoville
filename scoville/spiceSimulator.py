@@ -1,6 +1,8 @@
 import os, subprocess
 from tempfile import mkstemp
 
+NS_PER_SECOND = 1000000
+
 
 class SpiceSimulator:
   def run(self, circuit, signals, duration, step):
@@ -33,7 +35,7 @@ class SpiceSimulator:
     outputFile = outputFile[:-len('.data')]
     controlBlock = ""
 
-    controlBlock += ".tran " + str(step) + "ms " + str(duration) + "ms\n"
+    controlBlock += ".tran " + str(step) + "ns " + str(duration) + "ns\n"
     controlBlock += ".control\nset filetype=ascii\nrun\n"
     controlBlock += "wrdata " + outputFile
     for signal in signals:
@@ -49,7 +51,7 @@ class SpiceSimulator:
       temp = {}
       data = line.split()
       if len(data) == (2 * len(signals)):
-        timestamp = float(data[0]) * 1000
+        timestamp = float(data[0]) * NS_PER_SECOND
         i = 0
         for signal in signals:
           temp[signal] = float(data[(i * 2) + 1])
