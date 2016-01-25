@@ -1,25 +1,152 @@
-from xml.dom.minidom import parse, parseString
+import xml.etree.ElementTree as XML
+
+
+class SchematicParsingException(Exception):
+  pass
+
+
+class EaglePart:
+  def __init__(self, partNode, schematic):
+    self.attributes = {}
+    self.gates = {}
+
+    self.xml = partNode
+    self.name = partNode.get('name')
+    self.value = partNode.get('value')
+
+    self.libraryName = partNode.get('library')
+    self.devicesetName = partNode.get('deviceset')
+    self.deviceName = partNode.get('device')
+    self.technologyName = partNode.get('technology')
+
+    self.attributes = self._extractAttributes(schematic)
+    self.netMap = self._extractNetMap(schematic)
+    pass
+
+  def _extractAttributes(self, schematic):
+    technology = self.method_name(schematic, self.technologyName)
+
+    if technology == None:
+      technology = self.method_name(schematic, "DEFAULT")
+
+    if technology == None:
+      technology = self.method_name(schematic, "")
+
+    if technology == None:
+      raise SchematicParsingException("Can't find correct attributes for part {}".format(self.name))
+
+    attributes = {}
+    for element in technology.findall('attribute'):
+      attributes[element.get('name')] = element.get('value')
+
+    return attributes
+
+  def method_name(self, schematic, technologyName):
+    technologyPathString = "./libraries/library[@name='{library}']/devicesets/deviceset[@name='{deviceset}']/devices/device[@name='{device}']/technologies/technology[@name='{technology}']"
+    return schematic.find(
+        technologyPathString.format(library=self.libraryName, deviceset=self.devicesetName, device=self.deviceName,
+                                    technology=technologyName))
+
+  def _extractNetMap(self, schematic):
+    nets = schematic.findall('.//net')
+    netMap = {}
+
+    for net in nets:
+      pinrefs = net.findall('.//pinref')
+      for pinref in pinrefs:
+        if pinref.get('part') == self.name:
+          netMap[pinref.get('pin')] = net.get('name')
+
+    return netMap
+
+  def getSpiceNetlist(self):
+    spicePrefix = self.getAttribute("SV_SPICE_PREFIX")
+
+    if spicePrefix == None:
+      return None
+
+    spiceOrder = self.getAttribute("SV_SPICE_ORDER").split(';')
+
+    netList = ''
+    for pin in spiceOrder:
+      netList += self.netMap[pin] + ' '
+
+    return spicePrefix + self.name + ' ' + netList + self.value
+
+  def getSpiceModel(self):
+    spiceModel = self.getAttribute("SV_SPICE_MODEL")
+
+    if spiceModel == None:
+      return None
+
+    return '.model ' + self.value + ' ' + spiceModel
+
+  def getSpiceSupply(self):
+
+    if self.libraryName not in ['supply1', 'supply2']:
+      return None
+
+    if 'GND' in self.devicesetName:
+      return None
+
+    voltage = self.devicesetName
+    name = voltage.replace('+', 'P').replace('-', 'M')
+    connection = ' '.join(self.netMap.values())
+
+    return 'V' + name + ' ' + connection + ' GND dc ' + voltage + ' ac 0V'
+
+  def getAttribute(self, attributeName):
+    try:
+      return self.attributes[attributeName]
+    except KeyError:
+      pass
+    return None
+
+
+class EagleLibrary:
+  def __init__(self, libraryNode):
+    self.name = libraryNode.get('name')
+    self.xml = libraryNode
+    pass
+
 
 class EagleSchematic:
   def __init__(self, xmlString):
-    self.xml = parseString(xmlString)
+    tree = XML.fromstring(xmlString)
 
-  @staticmethod
-  def conditionalAdd(collection, value):
-    if value != None:
-          collection.add(value)
+    self.settings = tree.find('./drawing/settings')
+    self.grid = tree.find('./drawing/grid')
+    self.layers = tree.find('./drawing/layers')
 
+    schematic = tree.find('./drawing/schematic')
+    self.libraries = self._parseLibraries(schematic)
+    self.parts = self._parseParts(schematic)
+
+  def _parseLibraries(self, rootNode):
+    libraries = {}
+    for libraryNode in rootNode.findall('.//library'):
+      library = EagleLibrary(libraryNode)
+      libraries[library.name] = library
+
+    return libraries
+
+  def _parseParts(self, rootNode):
+    parts = {}
+    for partNode in rootNode.findall('.//part'):
+      part = EaglePart(partNode, rootNode)
+      parts[part.name] = part
+
+    return parts
 
   def getSpiceData(self):
     netLists = set()
     models = set()
     voltageSources = set()
 
-    parts = self._getParts()
-    for part in parts:
-      self.conditionalAdd(voltageSources, self._getSpiceSupplyForPart(part))
-      self.conditionalAdd(netLists, self._getSpiceNetlistForPart(part))
-      self.conditionalAdd(models, self._getSpiceModelForPart(part))
+    for part in self.parts.values():
+      self.addIfNotNone(voltageSources, part.getSpiceSupply())
+      self.addIfNotNone(netLists, part.getSpiceNetlist())
+      self.addIfNotNone(models, part.getSpiceModel())
 
     netList = "\n".join(netLists)
     models = "\n".join(models)
@@ -27,98 +154,7 @@ class EagleSchematic:
 
     return voltageSources + "\n" + netList + "\n" + models + "\n.end"
 
-  def _getParts(self):
-    return self.xml.getElementsByTagName('part')
-
-  def _getDevices(self):
-    return self.xml.getElementsByTagName('deviceset')
-
-  def _getDeviceAttributes(self, part):
-    library = self._getNodeWithTagAndName('library', part.getAttribute('library'))
-    deviceset = self._getNodeWithTagAndName('deviceset', part.getAttribute('deviceset'), library)
-    device = self._getNodeWithTagAndName('device', part.getAttribute('device'), deviceset)
-    technology = self._getNodeWithTagAndName('technology', part.getAttribute('technology'), device)
-
-    if technology == None:
-      technology = device.getElementsByTagName('technology')[0]
-
-    if technology != None:
-      return technology.getElementsByTagName('attribute')
-
-    return []
-
-  def _getSpiceNetlistForPart(self, part):
-
-    netMap = self._getNetMapForPart(part)
-    spicePrefix = self._getAttributeValueForPart(part, "SV_SPICE_PREFIX")
-    spiceOrder = self._getAttributeValueForPart(part, "SV_SPICE_ORDER").split(';')
-    partName = part.getAttribute('name')
-    partValue = part.getAttribute('value')
-
-    if spicePrefix == '':
-      return None
-
-    netList = ''
-    for pin in spiceOrder:
-      netList += netMap[pin] + ' '
-
-    return spicePrefix + partName + ' ' + netList + partValue
-
-  def _getSpiceSupplyForPart(self, part):
-    if not self._isSupplyPart(part):
-      return None
-
-    voltage = part.getAttribute('deviceset')
-    name = voltage.replace('+', 'P').replace('-', 'M')
-    connection = ' '.join(self._getNetMapForPart(part).values())
-
-    if 'GND' in voltage:
-      return None
-
-    return 'V'+name+' '+ connection + ' GND dc ' + voltage + ' ac 0V'
-
-
-  def _getAttributeValueForPart(self, part, attributeName):
-    attributes = self._getDeviceAttributes(part)
-    for attribute in attributes:
-      if attribute.getAttribute('name') == attributeName:
-        return attribute.getAttribute('value')
-
-    return ""
-
-  def _getNetMapForPart(self, part):
-    nets = self.xml.getElementsByTagName('net')
-    netMap = {}
-
-    for net in nets:
-      pinrefs = net.getElementsByTagName('pinref')
-      for pinref in pinrefs:
-        if pinref.getAttribute('part') == part.getAttribute('name'):
-          netMap[pinref.getAttribute('pin')] = net.getAttribute('name')
-
-
-    return netMap
-
-  def _getSpiceModelForPart(self, part):
-    spiceModel = self._getAttributeValueForPart(part, 'SV_SPICE_MODEL')
-
-    if spiceModel == '':
-      return None
-
-    partValue = part.getAttribute('value')
-
-    return '.model ' + partValue + ' ' + spiceModel
-
-  def _getNodeWithTagAndName(self, tag, name, root = None):
-    if root == None:
-      root = self.xml
-
-    nodes = root.getElementsByTagName(tag)
-    for node in nodes:
-      if node.getAttribute('name') == name:
-        return node
-    return None
-
-  def _isSupplyPart(self, part):
-    partLibrary = part.getAttribute('library')
-    return partLibrary in ['supply1', 'supply2']
+  @staticmethod
+  def addIfNotNone(collection, value):
+    if value != None:
+      collection.add(value)
