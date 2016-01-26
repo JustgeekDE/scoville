@@ -11,7 +11,7 @@ class TestSpiceSimulator(TestCase):
     self.assertEqual(SpiceSimulator.addControl(circuitDescription, "foo.data", [], 100, 1),
                      ".tran 1ns 100ns\n.control\nset filetype=ascii\nrun\nwrdata foo\n.endc\n.end")
 
-  def testShouldAddFooterAddCorrectPlace(self):
+  def testShouldAddFooterAtCorrectPlace(self):
     circuitDescription = "Vs VCC GND dc 5V ac 0V\nQa out aBase aEm BC547B\n.model BC547B NPN ()\n.end"
     self.assertEqual(SpiceSimulator.addControl(circuitDescription, "foo,data", [], 100, 1),
                      "Vs VCC GND dc 5V ac 0V\nQa out aBase aEm BC547B\n.model BC547B NPN ()\n.tran 1ns 100ns\n.control\nset filetype=ascii\nrun\nwrdata foo\n.endc\n.end")
