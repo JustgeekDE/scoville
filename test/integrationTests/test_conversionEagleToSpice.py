@@ -44,3 +44,11 @@ class ConversionTest(TestCase):
     result = circuit.getSpiceData().split("\n")
 
     self.assertEqual('.end', result[-1])
+
+  def test_ConversionShouldIncludeSubCircuits(self):
+    inputData = resource_string('test', 'testRessources/relayWithSubCircuit.sch')
+    circuit = EagleSchematic(inputData)
+
+    result = circuit.getSpiceData().split("\n")
+
+    self.assertEqual(AnyListWithString(".model SW_OPEN SW(Ron=.1 Roff=1Meg Vt=6 )"), result)

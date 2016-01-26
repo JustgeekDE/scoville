@@ -152,17 +152,20 @@ class EagleSchematic:
     netLists = set()
     models = set()
     voltageSources = set()
+    subCircuits = set()
 
     for part in self.parts.values():
       self.addIfNotNone(voltageSources, part.getSpiceSupply())
       self.addIfNotNone(netLists, part.getSpiceNetlist())
       self.addIfNotNone(models, part.getSpiceModel())
+      self.addIfNotNone(subCircuits, part.getSpiceSubCircuit())
 
     netList = "\n".join(netLists)
     models = "\n".join(models)
     voltageSources = "\n".join(voltageSources)
+    subCircuits = "\n".join(subCircuits)
 
-    return voltageSources + "\n" + netList + "\n" + models + "\n.end"
+    return voltageSources + "\n" + netList + "\n" + models + "\n" + subCircuits + "\n.end"
 
   @staticmethod
   def addIfNotNone(collection, value):
