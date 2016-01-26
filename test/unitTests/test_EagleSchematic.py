@@ -103,3 +103,19 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceModel, None)
     self.assertEqual(spiceNet, None)
     self.assertEqual(spiceSupply, None)
+
+  def test_shouldCreateSubCircuitForModelWithSubCircuit(self):
+    inputData = resource_string('test', "testRessources/relayWithSubCircuit.sch")
+    circuit = eagleSchematic.EagleSchematic(inputData)
+
+    relay = circuit.parts['RELAY1']
+    spiceModel = relay.getSpiceModel()
+    spiceNet = relay.getSpiceNetlist()
+    spiceSupply = relay.getSpiceSupply()
+    spiceSubCircuit = relay.getSpiceSubCircuit()
+
+    self.assertEqual(spiceModel, None)
+    self.assertEqual(spiceNet, 'xRELAY1 NOP CENT NCL NPOS NNEG basicRelay')
+    self.assertEqual(spiceSupply, None)
+    self.assertEqual(spiceSubCircuit, ".subckt basicRelay  1   2   3   4   5\nSOpen 1 2 4 5 SW_OPEN on\nSClosed 2 3 4 5 SW_CLOSED on\n.model SW_OPEN SW(Ron=.1 Roff=1Meg Vt=6 )\n.model SW_CLOSED SW(Ron=1Meg Roff=.1 Vt=6 )\n.ends")
+

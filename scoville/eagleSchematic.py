@@ -95,6 +95,16 @@ class EaglePart:
 
     return 'V' + name + ' ' + connection + ' GND dc ' + voltage + ' ac 0V'
 
+  def getSpiceSubCircuit(self):
+    subCircuitData = self.getAttribute("SV_SPICE_SUBCKT")
+
+    if subCircuitData == None:
+      return None
+
+    subCircuitData = subCircuitData.replace("\\n", "\n")
+    subCircuitData = subCircuitData.replace('%NAME%', self.value)
+    return subCircuitData
+
   def getAttribute(self, attributeName):
     try:
       return self.attributes[attributeName]
