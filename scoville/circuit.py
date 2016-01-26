@@ -4,7 +4,7 @@ from scoville.spiceSimulator import SpiceSimulator
 
 class Circuit:
   def __init__(self, circuitData):
-    self.originalData = circuitData
+    self.originalData = circuitData.decode('utf-8')
 
     self.usedParts = []
     self.inspectedElements = []
