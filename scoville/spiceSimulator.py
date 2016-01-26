@@ -41,8 +41,16 @@ class SpiceSimulator:
     for signal in signals:
       controlBlock += " " + signal
     controlBlock += "\n.endc"
-    circuit = circuit.replace(".end", controlBlock + "\n.end")
+    circuit = SpiceSimulator.rreplace(circuit, ".end", controlBlock + "\n.end", 1)
     return circuit
+
+  ''' Rightside replace: from
+      http://stackoverflow.com/questions/2556108/how-to-replace-the-last-occurence-of-an-expression-in-a-string
+  '''
+  @staticmethod
+  def rreplace(s, old, new, occurrence):
+    li = s.rsplit(old, occurrence)
+    return new.join(li)
 
   @staticmethod
   def parseData(dataBlob, signals):
