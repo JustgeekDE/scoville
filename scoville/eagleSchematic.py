@@ -1,5 +1,4 @@
-import xml.etree.ElementTree as XML
-
+from lxml import etree
 
 class SchematicParsingException(Exception):
   pass
@@ -24,13 +23,13 @@ class EaglePart:
     pass
 
   def _extractAttributes(self, schematic):
-    technology = self.method_name(schematic, self.technologyName)
+    technology = self.getTechnologyValue(schematic, self.technologyName)
 
     if technology == None:
-      technology = self.method_name(schematic, "DEFAULT")
+      technology = self.getTechnologyValue(schematic, "DEFAULT")
 
     if technology == None:
-      technology = self.method_name(schematic, "")
+      technology = self.getTechnologyValue(schematic, "")
 
     if technology == None:
       raise SchematicParsingException("Can't find correct attributes for part {}".format(self.name))
@@ -41,7 +40,7 @@ class EaglePart:
 
     return attributes
 
-  def method_name(self, schematic, technologyName):
+  def getTechnologyValue(self, schematic, technologyName):
     technologyPathString = "./libraries/library[@name='{library}']/devicesets/deviceset[@name='{deviceset}']/devices/device[@name='{device}']/technologies/technology[@name='{technology}']"
     return schematic.find(
         technologyPathString.format(library=self.libraryName, deviceset=self.devicesetName, device=self.deviceName,
@@ -122,7 +121,7 @@ class EagleLibrary:
 
 class EagleSchematic:
   def __init__(self, xmlString):
-    tree = XML.fromstring(xmlString)
+    tree =  etree.fromstring(xmlString, etree.XMLParser(remove_blank_text=True))
 
     self.xml = tree
 
@@ -170,7 +169,7 @@ class EagleSchematic:
     return voltageSources + "\n" + netList + "\n" + models + "\n" + subCircuits + "\n.end"
 
   def toString(self):
-    return XML.tostring(self.xml)
+    return etree.tostring(self.xml, pretty_print=True)
 
   def replace(self, deviceSet, replacementSchematic):
     self.libraries.update(replacementSchematic.libraries)

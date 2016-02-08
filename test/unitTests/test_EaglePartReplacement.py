@@ -2,6 +2,7 @@ from unittest import TestCase
 from pkg_resources import resource_string
 import xml.etree.ElementTree as XML
 from BeautifulSoup import BeautifulStoneSoup
+from lxml import etree
 
 from scoville import eagleSchematic
 
@@ -11,6 +12,9 @@ class ConversionTest(TestCase):
   def getSchematic(self, schematic):
     inputData = resource_string('test', 'testRessources/replacementExamples/' + schematic + '.sch')
     return eagleSchematic.EagleSchematic(inputData)
+
+  def prettifyXML(self, inputData):
+    return etree.tostring(etree.fromstring(inputData, etree.XMLParser(remove_blank_text=True)), pretty_print=True)
 
   def test_afterExchangeLibraryShouldBeIncluded(self):
     baseSchematic = self.getSchematic('singleDiode')
@@ -25,10 +29,8 @@ class ConversionTest(TestCase):
     inputData = resource_string('test', 'testRessources/replacementExamples/singleDiode.sch')
     baseSchematic = eagleSchematic.EagleSchematic(inputData)
 
-    originalXML = XML.fromstring(inputData)
-
-
-    originalFile = BeautifulStoneSoup(XML.tostring(originalXML)).prettify().strip()
-    savedFile = BeautifulStoneSoup(baseSchematic.toString()).prettify().strip()
+    originalFile = self.prettifyXML(inputData)
+    savedFile = baseSchematic.toString()
 
     self.assertEqual(originalFile,savedFile)
+
