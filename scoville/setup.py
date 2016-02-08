@@ -8,5 +8,5 @@ setup(name='Scoville',
       author='Philip Peter',
       author_email='philip.peter@justgeek.de',
       url='https://github.com/JustgeekDE/scoville',
-      packages=[],
+      packages=['scoville'],
      )
