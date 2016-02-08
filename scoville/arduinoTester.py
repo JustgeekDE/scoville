@@ -47,6 +47,7 @@ class ArduinoInterface:
         if self._proccessInput(line):
           inputCounter += 1
     self.serialInterface.write("a0;")
+    self._setAllOutputs('z')
 
   def flushInput(self):
     self._command('a0;')
@@ -71,6 +72,11 @@ class ArduinoInterface:
       if self.outputMap[signalName] > 2.5:
         value = 'h'
 
+      command = "s{pin}={value};".format(pin = pin, value = value)
+      self._command(command)
+
+  def _setAllOutputs(self, value):
+    for pin in self.signalMap.values():
       command = "s{pin}={value};".format(pin = pin, value = value)
       self._command(command)
 
