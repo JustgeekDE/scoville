@@ -124,6 +124,8 @@ class EagleSchematic:
   def __init__(self, xmlString):
     tree = XML.fromstring(xmlString)
 
+    self.xml = tree
+
     self.settings = tree.find('./drawing/settings')
     self.grid = tree.find('./drawing/grid')
     self.layers = tree.find('./drawing/layers')
@@ -166,6 +168,13 @@ class EagleSchematic:
     subCircuits = "\n".join(subCircuits)
 
     return voltageSources + "\n" + netList + "\n" + models + "\n" + subCircuits + "\n.end"
+
+  def toString(self):
+    return XML.tostring(self.xml)
+
+  def replace(self, deviceSet, replacementSchematic):
+    self.libraries.update(replacementSchematic.libraries)
+    pass
 
   @staticmethod
   def addIfNotNone(collection, value):
