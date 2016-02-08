@@ -15,7 +15,7 @@ class SpiceSimulator:
     circuitFile.write("\n" + circuit)
     circuitFile.close()
 
-    returnCode = subprocess.call('ngspice ' + circuitPath, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    returnCode = subprocess.call('ngspice -b ' + circuitPath, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # assert returnCode == 0, "Execution of spice failed"
 
     dataFile = open(dataPath, 'r')
