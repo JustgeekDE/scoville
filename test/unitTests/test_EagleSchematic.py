@@ -6,7 +6,10 @@ from scoville import eagleSchematic
 
 class ConversionTest(TestCase):
   def singleTransistorSchematic(self):
-    return resource_string('test', "testRessources/singleTransistor.sch")
+    return self.getSchematic('singleTransistor.sch')
+
+  def getSchematic(self, schematic):
+    return resource_string('test', 'testRessources/simulationExamples/' + schematic)
 
   def test_extractSinglePartCorrectly(self):
     inputData = self.singleTransistorSchematic()
@@ -66,7 +69,7 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceData, ".model BC547 NPN ()")
 
   def test_getSpiceModelForSupplyPart(self):
-    inputData = resource_string('test', "testRessources/transistorAndResistorWithSupply.sch")
+    inputData = self.getSchematic('transistorAndResistorWithSupply.sch')
     circuit = eagleSchematic.EagleSchematic(inputData)
 
     positiveSupply = circuit.parts['P+1']
@@ -79,7 +82,7 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceSupply, "VP5V +5V GND dc +5V ac 0V")
 
   def test_shouldNotCreateSupplyForGNDNode(self):
-    inputData = resource_string('test', "testRessources/transistorAndResistorWithSupply.sch")
+    inputData = self.getSchematic('transistorAndResistorWithSupply.sch')
     circuit = eagleSchematic.EagleSchematic(inputData)
 
     negativeSupply = circuit.parts['GND1']
@@ -92,7 +95,7 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceSupply, None)
 
   def test_shouldNotCreateModelForUnknowNode(self):
-    inputData = resource_string('test', "testRessources/transistorAndResistorWithSupplyAndTestPoint.sch")
+    inputData = self.getSchematic('transistorAndResistorWithSupplyAndTestPoint.sch')
     circuit = eagleSchematic.EagleSchematic(inputData)
 
     testPoint = circuit.parts['TP1']
@@ -105,7 +108,7 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceSupply, None)
 
   def test_shouldCreateSubCircuitForModelWithSubCircuit(self):
-    inputData = resource_string('test', "testRessources/relayWithSubCircuit.sch")
+    inputData = self.getSchematic('relayWithSubCircuit.sch')
     circuit = eagleSchematic.EagleSchematic(inputData)
 
     relay = circuit.parts['RELAY1']

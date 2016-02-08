@@ -13,7 +13,7 @@ __author__ = 'ppeter'
 
 class TestCircuit(TestCase):
   def getExampleDescription(self):
-    return resource_string('test', "testRessources/NAND.cir")
+    return resource_string('test', "testRessources/simulationExamples/NAND.cir")
 
   def getExampleCircuit(self):
     returnData = []

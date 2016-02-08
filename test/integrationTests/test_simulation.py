@@ -8,7 +8,7 @@ class SimulationUnitTest(TestCase):
   def testSimulatesSingleNand(self):
     simulator = SpiceSimulator()
 
-    circuit = resource_string('test', 'testRessources/NAND.cir')
+    circuit = resource_string('test', 'testRessources/simulationExamples/NAND.cir')
 
     data = simulator.run(circuit, ["v(out)", "i(Vs)"], 5, 1)
 

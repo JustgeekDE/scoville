@@ -7,8 +7,11 @@ from scoville.eagleSchematic import EagleSchematic
 
 class ConversionTest(TestCase):
 
+  def getSchematic(self, schematic):
+    return resource_string('test', 'testRessources/simulationExamples/' + schematic)
+
   def test_ConvertingSingleTransistor(self):
-    inputData = resource_string('test', 'testRessources/singleTransistor.sch')
+    inputData = self.getSchematic('singleTransistor.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
@@ -17,7 +20,7 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
 
   def test_ConvertingTwoParts(self):
-    inputData = resource_string('test', 'testRessources/transistorAndResistor.sch')
+    inputData = self.getSchematic('transistorAndResistor.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
@@ -27,7 +30,7 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
 
   def test_ConvertingWithVoltageSource(self):
-    inputData = resource_string('test', 'testRessources/transistorAndResistorWithSupply.sch')
+    inputData = self.getSchematic('transistorAndResistorWithSupply.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
@@ -38,7 +41,7 @@ class ConversionTest(TestCase):
     self.assertEqual(AnyListWithString(".model BC547 NPN ()"), result)
 
   def test_ConversionShouldIncludeEndTag(self):
-    inputData = resource_string('test', 'testRessources/singleTransistor.sch')
+    inputData = self.getSchematic('singleTransistor.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
@@ -46,7 +49,7 @@ class ConversionTest(TestCase):
     self.assertEqual('.end', result[-1])
 
   def test_ConversionShouldIncludeSubCircuits(self):
-    inputData = resource_string('test', 'testRessources/relayWithSubCircuit.sch')
+    inputData = self.getSchematic('relayWithSubCircuit.sch')
     circuit = EagleSchematic(inputData)
 
     result = circuit.getSpiceData().split("\n")
