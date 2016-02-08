@@ -1,21 +1,31 @@
-import serial, time
+import time
+
+class SignalError(Exception):
+    pass
 
 class ArduinoInterface:
-  def __init__(self, serialPort, baudrate=115200):
-    self.serialInterface = serial.Serial(port=serialPort, baudrate=baudrate, timeout=1)
+  def __init__(self, serialInterface):
+    self.serialInterface = serialInterface
 
     self.signalMap = {}
     self.outputMap = {}
     self.voltageMap = {}
     self.data = {}
 
+  def mapOutput(self, signalName, outputPin):
+    self.signalMap[signalName] = outputPin
 
-  def setSignal(self, signal, outputPin):
-    self.signalMap[signal.name] = outputPin
-    self.outputMap[outputPin] = signal.value
+  def mapInput(self, signalName, inputPin):
+    self.voltageMap[inputPin] = signalName
 
-  def inspectVoltage(self, voltageName, inputPin):
-    self.voltageMap[inputPin] = voltageName
+  def setSignal(self, signal):
+    if signal.name not in self.signalMap.keys():
+      raise SignalError('Signal ' + str(signal.name) + ' is not assigned to any output')
+    self.outputMap[signal.name] = signal.value
+
+  def inspectVoltage(self, voltageName):
+    if voltageName not in self.voltageMap.values():
+      raise SignalError('Signal ' + str(voltageName) + ' is not assigned to any output')
     self.data[voltageName] = []
 
   def getVoltage(self, voltageName):
@@ -37,7 +47,6 @@ class ArduinoInterface:
         if self._proccessInput(line):
           inputCounter += 1
     self.serialInterface.write("a0;")
-    self.serialInterface.close()
 
   def flushInput(self):
     self._command('a0;')
@@ -48,16 +57,18 @@ class ArduinoInterface:
   def _command(self, command):
     self.serialInterface.flushInput()
     self.serialInterface.flushOutput()
-    self.serialInterface.write("foo;")
-    self.serialInterface.write(command)
     self.serialInterface.write(command)
     self.serialInterface.flush()
     pass
 
   def _setOutputs(self):
-    for pin in self.outputMap.keys():
+    for signalName in self.outputMap.keys():
+      if signalName not in self.signalMap.keys():
+        raise SignalError('Signal ' + str(signalName) + ' is not assigned to any output')
+
+      pin = self.signalMap[signalName]
       value = 'l'
-      if self.outputMap[pin] > 2.5:
+      if self.outputMap[signalName] > 2.5:
         value = 'h'
 
       command = "s{pin}={value};".format(pin = pin, value = value)
