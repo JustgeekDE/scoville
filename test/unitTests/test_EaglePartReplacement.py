@@ -3,6 +3,7 @@ from unittest import TestCase
 from lxml import etree
 from pkg_resources import resource_string
 
+import schematicTransformations
 from scoville import eagleSchematic
 
 
@@ -56,9 +57,11 @@ class ConversionTest(TestCase):
     self.assertIn('part="D1-LED1"', xml)
 
   def test_movingSchematicShouldWork(self):
+
+    transformation = schematicTransformations.SchematicTranslation((2, 5))
     baseSchematic = self.getSchematic('simpleSchematicWithParts')
 
-    newSchematic = baseSchematic.translated((2, 5))
+    newSchematic = transformation.transform(baseSchematic)
 
     originalXml = baseSchematic.toString()
     xml = newSchematic.toString()
@@ -77,29 +80,30 @@ class ConversionTest(TestCase):
     self.assertIn('<wire x1="35.02" y1="55.8" x2="29.94" y2="55.8" width="0.1524" layer="91"/>', xml)
 
   def test_rotationByQuarter(self):
-    baseSchematic = self.getSchematic('simpleSchematicWithParts')
+    transformation = schematicTransformations.SchematicRotation(90)
 
-    (x,y) = baseSchematic._rotateCoordinates((1,0), 90)
+    (x,y) = transformation._rotateCoordinates((1,0), 90)
     self.assertAlmostEqual(x, 0.0)
     self.assertAlmostEqual(y, 1.0)
 
-    (x,y) = baseSchematic._rotateCoordinates((1,0), 180)
+    (x,y) = transformation._rotateCoordinates((1,0), 180)
     self.assertAlmostEqual(x, -1.0)
     self.assertAlmostEqual(y, 0.0)
 
-    (x,y) = baseSchematic._rotateCoordinates((1,0), 270)
+    (x,y) = transformation._rotateCoordinates((1,0), 270)
     self.assertAlmostEqual(x, 0.0)
     self.assertAlmostEqual(y, -1.0)
 
-    (x,y) = baseSchematic._rotateCoordinates((1,0), 360)
+    (x,y) = transformation._rotateCoordinates((1,0), 360)
     self.assertAlmostEqual(x, 1.0)
     self.assertAlmostEqual(y, 0.0)
 
 
   def test_rotatingSchematicShouldWork(self):
+    transformation = schematicTransformations.SchematicRotation(90)
     baseSchematic = self.getSchematic('simpleSchematicWithParts')
 
-    newSchematic = baseSchematic.rotated(90)
+    newSchematic = transformation.transform(baseSchematic)
 
     originalXml = baseSchematic.toString()
     xml = newSchematic.toString()
