@@ -14,15 +14,10 @@ class ConversionTest(TestCase):
     return eagleSchematic.EagleSchematic(inputData)
 
   def prettifyXML(self, inputData):
-    return etree.tostring(etree.fromstring(inputData, etree.XMLParser(remove_blank_text=True)), pretty_print=True)
-
-  def test_afterExchangeLibraryShouldBeIncluded(self):
-    baseSchematic = self.getSchematic('singleDiode')
-    replacementSchematic = self.getSchematic('singleLed')
-
-    baseSchematic.replace('1N4004', replacementSchematic)
-
-    self.assertIn('led', baseSchematic.libraries.keys())
+    parser = etree.XMLParser(remove_blank_text=True)
+    parsedXML = etree.fromstring(inputData, parser)
+    prettyXML = etree.tostring(parsedXML, pretty_print=True)
+    return prettyXML
 
   def test_readingAndWritingToFileShouldStayTheSame(self):
     self.maxDiff = None
@@ -34,3 +29,19 @@ class ConversionTest(TestCase):
 
     self.assertEqual(originalFile,savedFile)
 
+  def test_afterExchangeLibraryShouldBeIncluded(self):
+    baseSchematic = self.getSchematic('singleDiode')
+    replacementSchematic = self.getSchematic('singleLed')
+
+    baseSchematic.replace('1N4004', replacementSchematic)
+
+    self.assertIn('led', baseSchematic.libraries.keys())
+
+  def test_afterExchangeLibraryShouldBeInXML(self):
+    baseSchematic = self.getSchematic('singleDiode')
+    replacementSchematic = self.getSchematic('singleLed')
+
+    baseSchematic.replace('1N4004', replacementSchematic)
+    xml = baseSchematic.toString()
+
+    self.assertIn('<library name="led">',xml)

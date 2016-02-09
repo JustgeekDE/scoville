@@ -171,8 +171,15 @@ class EagleSchematic:
   def toString(self):
     return etree.tostring(self.xml, pretty_print=True)
 
+  def replaceLibraries(self, newLibraries):
+    self.libraries.update(newLibraries)
+    libraryNode = self.xml.find('./drawing/schematic/libraries')
+    libraryNode.clear()
+    for library in self.libraries.values():
+      libraryNode.append(library.xml)
+
   def replace(self, deviceSet, replacementSchematic):
-    self.libraries.update(replacementSchematic.libraries)
+    self.replaceLibraries(replacementSchematic.libraries)
     pass
 
   @staticmethod
