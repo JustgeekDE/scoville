@@ -45,3 +45,13 @@ class ConversionTest(TestCase):
     xml = baseSchematic.toString()
 
     self.assertIn('<library name="led">',xml)
+
+  def test_afterExchangingSinglePartItShouldBeIncluded(self):
+    baseSchematic = self.getSchematic('singleDiode')
+    replacementSchematic = self.getSchematic('singleLed')
+
+    baseSchematic.replace('1N4004', replacementSchematic)
+    xml = baseSchematic.toString()
+
+    self.assertIn('D1-LED1', baseSchematic.parts.keys())
+    self.assertIn('name="D1-LED1"',xml)

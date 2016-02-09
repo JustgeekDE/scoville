@@ -1,4 +1,5 @@
 from lxml import etree
+import copy
 
 class SchematicParsingException(Exception):
   pass
@@ -111,6 +112,10 @@ class EaglePart:
       pass
     return None
 
+  def rename(self, newName):
+    self.name = newName
+    self.xml.set('name', newName)
+
 
 class EagleLibrary:
   def __init__(self, libraryNode):
@@ -171,16 +176,31 @@ class EagleSchematic:
   def toString(self):
     return etree.tostring(self.xml, pretty_print=True)
 
-  def replaceLibraries(self, newLibraries):
+  def replace(self, deviceSet, replacementSchematic):
+    self._replaceLibraries(replacementSchematic.libraries)
+    self._replacePars(replacementSchematic, deviceSet)
+    pass
+
+  def _replaceLibraries(self, newLibraries):
     self.libraries.update(newLibraries)
     libraryNode = self.xml.find('./drawing/schematic/libraries')
     libraryNode.clear()
     for library in self.libraries.values():
       libraryNode.append(library.xml)
 
-  def replace(self, deviceSet, replacementSchematic):
-    self.replaceLibraries(replacementSchematic.libraries)
-    pass
+  def _replacePars(self, replacementSchematic, deviceSet):
+    for oldPart in self.parts.values():
+      if oldPart.devicesetName == deviceSet:
+        self.parts.pop(oldPart.name)
+        for newPart in replacementSchematic.parts.values():
+          newPart = copy.deepcopy(newPart)
+          newPart.rename(oldPart.name + '-' + newPart.name)
+          self.parts[newPart.name] = newPart
+    partsNode = self.xml.find('./drawing/schematic/parts')
+    partsNode.clear()
+    for part in self.parts.values():
+      partsNode.append(part.xml)
+
 
   @staticmethod
   def addIfNotNone(collection, value):
