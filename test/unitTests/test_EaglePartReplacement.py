@@ -55,3 +55,4 @@ class ConversionTest(TestCase):
 
     self.assertIn('D1-LED1', baseSchematic.parts.keys())
     self.assertIn('name="D1-LED1"',xml)
+    self.assertIn('part="D1-LED1"',xml)

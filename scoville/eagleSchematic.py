@@ -8,7 +8,6 @@ class SchematicParsingException(Exception):
 class EaglePart:
   def __init__(self, partNode, schematic):
     self.attributes = {}
-    self.gates = {}
 
     self.xml = partNode
     self.name = partNode.get('name')
@@ -21,7 +20,17 @@ class EaglePart:
 
     self.attributes = self._extractAttributes(schematic)
     self.netMap = self._extractNetMap(schematic)
+    self.gates = self._extractGates(schematic)
+
     pass
+
+  def _extractGates(self, schematic):
+    result = {}
+    queryString = ".//instance[@part='{name}']".format(name=self.name)
+    for element in schematic.findall(queryString):
+      result[element.get('gate')] = element
+    return result
+
 
   def _extractAttributes(self, schematic):
     technology = self.getTechnologyValue(schematic, self.technologyName)
@@ -115,6 +124,8 @@ class EaglePart:
   def rename(self, newName):
     self.name = newName
     self.xml.set('name', newName)
+    for gate in self.gates.values():
+      gate.set('part', newName)
 
 
 class EagleLibrary:
@@ -178,7 +189,7 @@ class EagleSchematic:
 
   def replace(self, deviceSet, replacementSchematic):
     self._replaceLibraries(replacementSchematic.libraries)
-    self._replacePars(replacementSchematic, deviceSet)
+    self._replaceParts(replacementSchematic, deviceSet)
     pass
 
   def _replaceLibraries(self, newLibraries):
@@ -188,7 +199,7 @@ class EagleSchematic:
     for library in self.libraries.values():
       libraryNode.append(library.xml)
 
-  def _replacePars(self, replacementSchematic, deviceSet):
+  def _replaceParts(self, replacementSchematic, deviceSet):
     for oldPart in self.parts.values():
       if oldPart.devicesetName == deviceSet:
         self.parts.pop(oldPart.name)
@@ -200,6 +211,14 @@ class EagleSchematic:
     partsNode.clear()
     for part in self.parts.values():
       partsNode.append(part.xml)
+    self._replaceInstances()
+
+  def _replaceInstances(self):
+    instanceNode = self.xml.find('.//instances')
+    instanceNode.clear()
+    for part in self.parts.values():
+      for instance in part.gates.values():
+        instanceNode.append(instance)
 
 
   @staticmethod
