@@ -1,5 +1,4 @@
 import math
-
 from lxml import etree
 
 from eagleSchematic import EagleSchematic
