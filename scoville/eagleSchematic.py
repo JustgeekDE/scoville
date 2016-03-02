@@ -201,11 +201,12 @@ class EagleSchematic:
   def _replaceParts(self, replacementSchematic, deviceSet):
     for oldPart in self.parts.values():
       if oldPart.devicesetName == deviceSet:
+        newSchematic = copy.deepcopy(replacementSchematic)
         self.parts.pop(oldPart.name)
-        for newPart in replacementSchematic.parts.values():
-          newPart = copy.deepcopy(newPart)
+        for newPart in newSchematic.parts.values():
           newPart.rename(oldPart.name + '-' + newPart.name)
           self.parts[newPart.name] = newPart
+
     partsNode = self.xml.find('./drawing/schematic/parts')
     partsNode.clear()
     for part in self.parts.values():
@@ -223,3 +224,4 @@ class EagleSchematic:
   def addIfNotNone(collection, value):
     if value != None:
       collection.add(value)
+
