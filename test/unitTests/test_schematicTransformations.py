@@ -57,6 +57,21 @@ class ConversionTest(TestCase):
     self.assertIn('part="D1-LED1"', xml)
 
 
+  def test_afterExchangingMultiplePartsTheyShouldBeIncluded(self):
+    baseSchematic = self.getSchematic('twoDiodes')
+    replacementSchematic = self.getSchematic('singleLed')
+
+    baseSchematic.replace('1N4004', replacementSchematic)
+    xml = baseSchematic.toString()
+
+    self.assertIn('D1-LED1', baseSchematic.parts.keys())
+    self.assertIn('name="D1-LED1"', xml)
+    self.assertIn('part="D1-LED1"', xml)
+    self.assertIn('D2-LED1', baseSchematic.parts.keys())
+    self.assertIn('name="D2-LED1"', xml)
+    self.assertIn('part="D2-LED1"', xml)
+
+
   def test_movingSchematicShouldWork(self):
     transformation = schematicTransformations.SchematicTranslation((2, 5))
     baseSchematic = self.getSchematic('simpleSchematicWithParts')
