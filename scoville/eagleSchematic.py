@@ -188,7 +188,10 @@ class EagleSchematic:
 
   def replace(self, deviceSet, replacementSchematic):
     self._replaceLibraries(replacementSchematic.libraries)
-    self._replaceParts(replacementSchematic, deviceSet)
+    for oldPart in self.parts.values():
+      if oldPart.devicesetName == deviceSet:
+        newSchematic = copy.deepcopy(replacementSchematic)
+        self._replaceSinglePart(newSchematic, oldPart)
     pass
 
   def _replaceLibraries(self, newLibraries):
@@ -198,22 +201,22 @@ class EagleSchematic:
     for library in self.libraries.values():
       libraryNode.append(library.xml)
 
-  def _replaceParts(self, replacementSchematic, deviceSet):
-    for oldPart in self.parts.values():
-      if oldPart.devicesetName == deviceSet:
-        newSchematic = copy.deepcopy(replacementSchematic)
-        self.parts.pop(oldPart.name)
-        for newPart in newSchematic.parts.values():
-          newPart.rename(oldPart.name + '-' + newPart.name)
-          self.parts[newPart.name] = newPart
+  def _replaceSinglePart(self, replacementSchematic, oldPart):
+    self.parts.pop(oldPart.name)
+    for newPart in replacementSchematic.parts.values():
+      newPart.rename(oldPart.name + '-' + newPart.name)
+      self.parts[newPart.name] = newPart
 
+    self._rebuildPartTree()
+
+  def _rebuildPartTree(self):
     partsNode = self.xml.find('./drawing/schematic/parts')
     partsNode.clear()
     for part in self.parts.values():
       partsNode.append(part.xml)
-    self._replaceInstances()
+    self._replaceInstanceTree()
 
-  def _replaceInstances(self):
+  def _replaceInstanceTree(self):
     instanceNode = self.xml.find('.//instances')
     instanceNode.clear()
     for part in self.parts.values():
