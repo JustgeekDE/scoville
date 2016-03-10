@@ -191,7 +191,11 @@ class EagleSchematic:
     for oldPart in self.parts.values():
       if oldPart.devicesetName == deviceSet:
         newSchematic = copy.deepcopy(replacementSchematic)
+        # rename parts
+        # translate parts
         self._replaceSinglePart(newSchematic, oldPart)
+        self._replaceNets(newSchematic, oldPart)
+        # copy other docu
     pass
 
   def _replaceLibraries(self, newLibraries):
@@ -222,6 +226,38 @@ class EagleSchematic:
     for part in self.parts.values():
       for instance in part.gates.values():
         instanceNode.append(instance)
+
+  def _replaceNets(self, replacementSchematic, oldPart):
+    replacedNets = []
+    pinRefs =  self.xml.findall(".//pinref[@part='{partName}']".format(partName=oldPart.name))
+    for refNode in pinRefs:
+      pin = refNode.get('pin')
+      replacementNet = replacementSchematic.getNet(pin)
+      if replacementNet != None:
+        replacementSegments = replacementNet.findall('.//segment')
+        for segment in replacementSegments:
+          for connection in segment.getchildren():
+            if connection.tag == 'pinref':
+              connection.set('part', oldPart.name + '-' + connection.get('part'))
+
+            refNode.getparent().append(connection)
+
+        refNode.getparent().remove(refNode)
+        replacedNets.append(pin)
+
+    # For pin in oldPart
+    #   Find net in replacement
+    #   Append net
+    #   remove old reference
+    # For net in replacement, not in doneNets
+    # add net renamed
+    pass
+
+  def getNets(self):
+    return self.xml.findall(".//net")
+
+  def getNet(self, netName):
+    return self.xml.find(".//net[@name='{partName}']".format(partName=netName))
 
   @staticmethod
   def addIfNotNone(collection, value):

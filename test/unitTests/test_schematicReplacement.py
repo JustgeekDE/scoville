@@ -68,3 +68,18 @@ class ReplacementTest(TestCase):
     self.assertIn('D2-LED1', baseSchematic.parts.keys())
     self.assertIn('name="D2-LED1"', xml)
     self.assertIn('part="D2-LED1"', xml)
+
+  def test_afterExchangingComplexPartTheNewNetShouldBeIncluded(self):
+    baseSchematic = self.getSchematic('basicComplexSchematic')
+    replacementSchematic = self.getSchematic('basicTwoPartSchematic')
+
+    baseSchematic.replace('SIMPLE_LED', replacementSchematic)
+    xml = baseSchematic.toString()
+
+    self.assertNotIn('<part name="P1"', xml)
+    self.assertNotIn('<instance part="P1"', xml)
+
+    self.assertIn('<pinref part="P1-LED1"', xml)
+    # self.assertIn('<net name="P1-INT1"', xml)
+
+
