@@ -126,6 +126,21 @@ class EaglePart:
     for gate in self.gates.values():
       gate.set('part', newName)
 
+  def getRotation(self):
+    rotation = 0
+    for gate in self.gates.values():
+      rot = gate.get('rot')
+      if rot != None:
+        rotation = int(rot[1:])
+    return rotation
+
+  def getPosition(self):
+    position = (0,0)
+    for gate in self.gates.values():
+      x = float(gate.get('x'))
+      y = float(gate.get('y'))
+      position = (x,y)
+    return position
 
 class EagleLibrary:
   def __init__(self, libraryNode):
@@ -192,6 +207,11 @@ class EagleSchematic:
       if oldPart.devicesetName == deviceSet:
         newSchematic = copy.deepcopy(replacementSchematic)
         newSchematic.prefixParts(oldPart.name + '-')
+
+        # transformation = schematicTransformations.SchematicRotation(90)
+        # baseSchematic = self.getSchematic('simpleSchematicWithParts')
+        # newSchematic = transformation.transform(baseSchematic)
+
         # translate parts
         self._replaceSinglePart(newSchematic, oldPart)
         self._replaceNets(newSchematic, oldPart)

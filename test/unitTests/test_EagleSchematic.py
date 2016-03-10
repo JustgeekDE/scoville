@@ -122,3 +122,15 @@ class ConversionTest(TestCase):
     self.assertEqual(spiceSupply, None)
     self.assertEqual(spiceSubCircuit, ".subckt basicRelay  1   2   3   4   5\nSOpen 1 2 4 5 SW_OPEN on\nSClosed 2 3 4 5 SW_CLOSED on\n.model SW_OPEN SW(Ron=.1 Roff=1Meg Vt=6 )\n.model SW_CLOSED SW(Ron=1Meg Roff=.1 Vt=6 )\n.ends")
 
+  def test_shouldReturnCorrectTranslationAndRotation(self):
+    inputData = self.getSchematic('transistorAndResistor.sch')
+    circuit = eagleSchematic.EagleSchematic(inputData)
+    transistor = circuit.parts['Q1']
+    resistor = circuit.parts['R1']
+
+    self.assertEqual(transistor.getRotation(), 0)
+    self.assertEqual(resistor.getRotation(), 90)
+
+    self.assertEqual(transistor.getPosition(), (53.34,43.18))
+    self.assertEqual(resistor.getPosition(), (53.34,55.88))
+
