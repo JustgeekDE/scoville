@@ -191,12 +191,25 @@ class EagleSchematic:
     for oldPart in self.parts.values():
       if oldPart.devicesetName == deviceSet:
         newSchematic = copy.deepcopy(replacementSchematic)
-        # rename parts
+        newSchematic.prefixParts(oldPart.name + '-')
         # translate parts
         self._replaceSinglePart(newSchematic, oldPart)
         self._replaceNets(newSchematic, oldPart)
         # copy other docu
     pass
+
+  def prefixParts(self, prefix):
+    for part in self.parts.values():
+      oldName = part.name
+      newName = prefix + oldName
+
+      partRefs =  self.xml.findall(".//pinref[@part='{partName}']".format(partName=oldName))
+      for ref in partRefs:
+        ref.set('part', newName)
+      part.rename(newName)
+
+    self._rebuildPartTree()
+
 
   def _replaceLibraries(self, newLibraries):
     self.libraries.update(newLibraries)
@@ -208,7 +221,6 @@ class EagleSchematic:
   def _replaceSinglePart(self, replacementSchematic, oldPart):
     self.parts.pop(oldPart.name)
     for newPart in replacementSchematic.parts.values():
-      newPart.rename(oldPart.name + '-' + newPart.name)
       self.parts[newPart.name] = newPart
 
     self._rebuildPartTree()
@@ -237,20 +249,18 @@ class EagleSchematic:
         replacementSegments = replacementNet.findall('.//segment')
         for segment in replacementSegments:
           for connection in segment.getchildren():
-            if connection.tag == 'pinref':
-              connection.set('part', oldPart.name + '-' + connection.get('part'))
-
             refNode.getparent().append(connection)
 
         refNode.getparent().remove(refNode)
         replacedNets.append(pin)
 
-    # For pin in oldPart
-    #   Find net in replacement
-    #   Append net
-    #   remove old reference
-    # For net in replacement, not in doneNets
-    # add net renamed
+    newNets = replacementSchematic.getNets()
+    for net in newNets:
+      oldName = net.get('name')
+      if oldName not in replacedNets:
+        newName = oldPart.name + '-' + oldName
+        net.set('name', newName)
+        self.addNet(net)
     pass
 
   def getNets(self):
@@ -258,6 +268,11 @@ class EagleSchematic:
 
   def getNet(self, netName):
     return self.xml.find(".//net[@name='{partName}']".format(partName=netName))
+
+  def addNet(self, netNode):
+    parent = self.xml.find(".//nets")
+    parent.append(netNode)
+
 
   @staticmethod
   def addIfNotNone(collection, value):

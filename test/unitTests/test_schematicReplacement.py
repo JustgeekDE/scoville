@@ -80,6 +80,6 @@ class ReplacementTest(TestCase):
     self.assertNotIn('<instance part="P1"', xml)
 
     self.assertIn('<pinref part="P1-LED1"', xml)
-    # self.assertIn('<net name="P1-INT1"', xml)
+    self.assertIn('<net name="P1-INT-1"', xml)
 
 
