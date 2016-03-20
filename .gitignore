@@ -5,8 +5,10 @@
 .DS_Store
 
 # Eagle
-.b#*
-.s#*
+# Backup files
+*.s#?
+*.b#?
+*.l#?
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
