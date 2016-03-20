@@ -78,3 +78,4 @@ class TransformationTest(TestCase):
 
     self.assertIn('<wire x1="33.02" y1="50.8" x2="27.94" y2="50.8"', originalXml)
     self.assertIn('<wire x1="-50.8" y1="33.02" x2="-50.8" y2="27.94"', xml)
+

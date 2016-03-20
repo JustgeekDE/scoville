@@ -1,7 +1,7 @@
 import math
 from lxml import etree
 
-from eagleSchematic import EagleSchematic
+import eagleSchematic
 
 
 class SchematicRotation:
@@ -19,7 +19,7 @@ class SchematicRotation:
       self._replaceCoordinateAttributesRotated(self.angle, element, ('x1', 'y1'))
       self._replaceCoordinateAttributesRotated(self.angle, element, ('x2', 'y2'))
 
-    return EagleSchematic(etree.tostring(xml))
+    return eagleSchematic.EagleSchematic(etree.tostring(xml))
 
   def _replaceCoordinateAttributesRotated(self, angle, element, (xName, yName)):
     x = float(element.get(xName))
@@ -55,7 +55,7 @@ class SchematicTranslation:
       self._replaceCoordinateAttributeTranslated(element, dX, 'x2')
       self._replaceCoordinateAttributeTranslated(element, dY, 'y2')
 
-    return EagleSchematic(etree.tostring(xml))
+    return eagleSchematic.EagleSchematic(etree.tostring(xml))
 
   def _replaceCoordinateAttributeTranslated(self, element, delta, attributeName):
     oldValue = float(element.get(attributeName))

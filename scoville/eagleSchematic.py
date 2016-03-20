@@ -1,6 +1,8 @@
 import copy
 from lxml import etree
 
+import schematicTransformations
+
 class SchematicParsingException(Exception):
   pass
 
@@ -148,6 +150,12 @@ class EagleLibrary:
     self.xml = libraryNode
     pass
 
+  def deepCopy(self):
+    originalXMLString = etree.tostring(self.xml, pretty_print=True)
+    node = etree.fromstring(originalXMLString, etree.XMLParser(remove_blank_text=True))
+    return EagleLibrary(node)
+
+
 
 class EagleSchematic:
   def __init__(self, xmlString):
@@ -205,14 +213,16 @@ class EagleSchematic:
     self._replaceLibraries(replacementSchematic.libraries)
     for oldPart in self.parts.values():
       if oldPart.devicesetName == deviceSet:
-        newSchematic = copy.deepcopy(replacementSchematic)
+        newSchematic = replacementSchematic.deepCopy()
+
+        rotation = schematicTransformations.SchematicRotation(oldPart.getRotation())
+        translation = schematicTransformations.SchematicTranslation(oldPart.getPosition())
+
+        newSchematic = rotation.transform(newSchematic)
+        newSchematic = translation.transform(newSchematic)
+
         newSchematic.prefixParts(oldPart.name + '-')
 
-        # transformation = schematicTransformations.SchematicRotation(90)
-        # baseSchematic = self.getSchematic('simpleSchematicWithParts')
-        # newSchematic = transformation.transform(baseSchematic)
-
-        # translate parts
         self._replaceSinglePart(newSchematic, oldPart)
         self._replaceNets(newSchematic, oldPart)
         # copy other docu
@@ -236,6 +246,7 @@ class EagleSchematic:
     libraryNode = self.xml.find('./drawing/schematic/libraries')
     libraryNode.clear()
     for library in self.libraries.values():
+      library = library.deepCopy()
       libraryNode.append(library.xml)
 
   def _replaceSinglePart(self, replacementSchematic, oldPart):
@@ -292,6 +303,11 @@ class EagleSchematic:
   def addNet(self, netNode):
     parent = self.xml.find(".//nets")
     parent.append(netNode)
+
+  def deepCopy(self):
+    originalXMLString = self.toString()
+    return EagleSchematic(originalXMLString)
+
 
 
   @staticmethod
