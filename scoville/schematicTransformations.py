@@ -20,20 +20,10 @@ class SchematicRotation:
       self._replaceCoordinateAttributesRotated(self.angle, element, ('x2', 'y2'))
 
     for element in schematic.findall('.//instance'):
-      rotation = 0
-      rot = element.get('rot')
-      if rot != None:
-        rotation = int(rot[1:])
-        del element.attrib['rot']
+      self._rotateElement(element)
 
-      rotation += self.angle
-      while rotation >= 360:
-        rotation -= 360
-      while rotation < 0:
-        rotation += 360
-
-      if rotation != 0:
-        element.set('rot', 'R'+str(rotation))
+    for element in schematic.findall('.//plain/text'):
+      self._rotateElement(element)
 
 
     return eagleSchematic.EagleSchematic(etree.tostring(xml))
@@ -50,6 +40,25 @@ class SchematicRotation:
     newX = (orgX * math.cos(angle)) - (orgY * math.sin(angle))
     newY = (orgX * math.sin(angle)) + (orgY * math.cos(angle))
     return (newX, newY)
+
+  def _rotateElement(self, element):
+    rotation = 0
+    rot = element.get('rot')
+    if rot != None:
+      rotation = int(rot[1:])
+      del element.attrib['rot']
+
+    rotation += self.angle
+    while rotation >= 360:
+      rotation -= 360
+    while rotation < 0:
+      rotation += 360
+
+    if rotation != 0:
+      element.set('rot', 'R'+str(rotation))
+    return element
+
+
 
 
 class SchematicTranslation:
