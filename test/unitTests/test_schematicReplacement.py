@@ -92,4 +92,5 @@ class ReplacementTest(TestCase):
 
     self.assertIn('<instance part="P1-LED1" gate="G$1" x="17.78" y="5.08"/>', xml)
     self.assertIn('<instance part="P2-LED1" gate="G$1" x="30.48" y="15.24" rot="R270"/>', xml)
+    self.assertIn('<text x="10.16" y="10.16" size="1.778" layer="97">LED</text>', xml)
 

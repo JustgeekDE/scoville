@@ -223,9 +223,10 @@ class EagleSchematic:
 
         newSchematic.prefixParts(oldPart.name + '-')
 
+        self._replaceDocu(newSchematic)
         self._replaceSinglePart(newSchematic, oldPart)
         self._replaceNets(newSchematic, oldPart)
-        # copy other docu
+
     pass
 
   def prefixParts(self, prefix):
@@ -294,6 +295,10 @@ class EagleSchematic:
         self.addNet(net)
     pass
 
+  def _replaceDocu(self, replacementSchematic):
+    self.addDocu(replacementSchematic.getDocu())
+
+
   def getNets(self):
     return self.xml.findall(".//net")
 
@@ -307,6 +312,14 @@ class EagleSchematic:
   def deepCopy(self):
     originalXMLString = self.toString()
     return EagleSchematic(originalXMLString)
+
+  def getDocu(self):
+    return self.xml.findall(".//plain/")
+
+  def addDocu(self, newDocu):
+    docuNode = self.xml.find(".//plain")
+    for newNode in newDocu:
+      docuNode.append(newNode)
 
 
 
