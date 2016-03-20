@@ -71,7 +71,7 @@ class TransformationTest(TestCase):
     self.assertIn('<text x="-45.72" y="27.94"', xml)
 
     self.assertIn('<instance part="LED1" gate="G$1" x="35.56" y="50.8"/>', originalXml)
-    self.assertIn('<instance part="LED1" gate="G$1" x="-50.8" y="35.56"/>', xml)
+    self.assertIn('<instance part="LED1" gate="G$1" x="-50.8" y="35.56" rot="R90"/>', xml)
 
     self.assertIn('<wire x1="25.4" y1="58.42" x2="25.4" y2="43.18"', originalXml)
     self.assertIn('<wire x1="-58.42" y1="25.4" x2="-43.18" y2="25.4"', xml)

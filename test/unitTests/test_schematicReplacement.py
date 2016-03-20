@@ -91,5 +91,5 @@ class ReplacementTest(TestCase):
     xml = baseSchematic.toString()
 
     self.assertIn('<instance part="P1-LED1" gate="G$1" x="17.78" y="5.08"/>', xml)
-    self.assertIn('<instance part="P2-LED1" gate="G$1" x="30.48" y="15.24"/>', xml)
+    self.assertIn('<instance part="P2-LED1" gate="G$1" x="30.48" y="15.24" rot="R270"/>', xml)
 
