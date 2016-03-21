@@ -26,55 +26,56 @@ class ReplacementTest(TestCase):
 
     self.assertEqual(originalFile, savedFile)
 
-  # def test_afterExchangeLibraryShouldBeIncluded(self):
-  #   baseSchematic = self.getSchematic('singleDiode')
-  #   replacementSchematic = self.getSchematic('singleLed')
-  #
-  #   baseSchematic.replace('1N4004', replacementSchematic)
-  #
-  #   self.assertIn('led', baseSchematic.libraries.keys())
-  #
+  def test_afterExchangeLibraryShouldBeIncluded(self):
+    baseBoard = self.getBoard('singleDiode')
+    replacementBoard = self.getBoard('singleLed')
+
+    baseBoard.replace('1N4004', replacementBoard)
+    xml = baseBoard.toString()
+
+    self.assertIn('<library name="led">', xml)
+
   # def test_afterExchangeLibraryShouldBeInXML(self):
-  #   baseSchematic = self.getSchematic('singleDiode')
-  #   replacementSchematic = self.getSchematic('singleLed')
+  #   baseBoard = self.getSchematic('singleDiode')
+  #   replacementBoard = self.getSchematic('singleLed')
   #
-  #   baseSchematic.replace('1N4004', replacementSchematic)
-  #   xml = baseSchematic.toString()
+  #   baseBoard.replace('R1N4004', replacementBoard)
+  #   xml = baseBoard.toString()
   #
   #   self.assertIn('<library name="led">', xml)
   #
   # def test_afterExchangingSinglePartItShouldBeIncluded(self):
-  #   baseSchematic = self.getSchematic('singleDiode')
-  #   replacementSchematic = self.getSchematic('singleLed')
+  #   baseBoard = self.getSchematic('singleDiode')
+  #   replacementBoard = self.getSchematic('singleLed')
   #
-  #   baseSchematic.replace('1N4004', replacementSchematic)
-  #   xml = baseSchematic.toString()
+  #   baseBoard.replace('1N4004', replacementBoard)
+  #   xml = baseBoard.toString()
   #
-  #   self.assertIn('D1-LED1', baseSchematic.parts.keys())
+  #   self.assertIn('D1-LED1', baseBoard.parts.keys())
   #   self.assertIn('name="D1-LED1"', xml)
   #   self.assertIn('part="D1-LED1"', xml)
   #
   #
   # def test_afterExchangingMultiplePartsTheyShouldBeIncluded(self):
-  #   baseSchematic = self.getSchematic('twoDiodes')
-  #   replacementSchematic = self.getSchematic('singleLed')
+  #   baseBoard = self.getSchematic('twoDiodes')
+  #   replacementBoard = self.getSchematic('singleLed')
   #
-  #   baseSchematic.replace('1N4004', replacementSchematic)
-  #   xml = baseSchematic.toString()
+  #   baseBoard.replace('1N4004', replacementBoard)
+  #   xml = baseBoard.toString()
   #
-  #   self.assertIn('D1-LED1', baseSchematic.parts.keys())
+  #   self.assertIn('D1-LED1', baseBoard.parts.keys())
   #   self.assertIn('name="D1-LED1"', xml)
   #   self.assertIn('part="D1-LED1"', xml)
-  #   self.assertIn('D2-LED1', baseSchematic.parts.keys())
+  #   self.assertIn('D2-LED1', baseBoard.parts.keys())
   #   self.assertIn('name="D2-LED1"', xml)
   #   self.assertIn('part="D2-LED1"', xml)
   #
   # def test_afterExchangingComplexPartTheNewNetShouldBeIncluded(self):
-  #   baseSchematic = self.getSchematic('basicComplexSchematic')
-  #   replacementSchematic = self.getSchematic('basicTwoPartSchematic')
+  #   baseBoard = self.getSchematic('basicComplexSchematic')
+  #   replacementBoard = self.getSchematic('basicTwoPartSchematic')
   #
-  #   baseSchematic.replace('SIMPLE_LED', replacementSchematic)
-  #   xml = baseSchematic.toString()
+  #   baseBoard.replace('SIMPLE_LED', replacementBoard)
+  #   xml = baseBoard.toString()
   #
   #   self.assertNotIn('<part name="P1"', xml)
   #   self.assertNotIn('<instance part="P1"', xml)
@@ -84,11 +85,11 @@ class ReplacementTest(TestCase):
   #
   #
   # def test_afterExchangingComplexPartTheNewPartsShouldBeTranslated(self):
-  #   baseSchematic = self.getSchematic('basicComplexSchematicWith2Parts')
-  #   replacementSchematic = self.getSchematic('basicTwoPartSchematic')
+  #   baseBoard = self.getSchematic('basicComplexSchematicWith2Parts')
+  #   replacementBoard = self.getSchematic('basicTwoPartSchematic')
   #
-  #   baseSchematic.replace('SIMPLE_LED', replacementSchematic)
-  #   xml = baseSchematic.toString()
+  #   baseBoard.replace('SIMPLE_LED', replacementBoard)
+  #   xml = baseBoard.toString()
   #
   #   self.assertIn('<instance part="P1-LED1" gate="G$1" x="17.78" y="5.08"/>', xml)
   #   self.assertIn('<instance part="P2-LED1" gate="G$1" x="30.48" y="15.24" rot="R270"/>', xml)

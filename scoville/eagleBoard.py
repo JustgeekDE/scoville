@@ -11,6 +11,7 @@ class EagleBoard:
     return etree.tostring(self.xml, pretty_print=True)
 
   def replace(self, partType, replacementSchematic):
+    self.addLibraries(replacementSchematic.getLibraries())
     pass
 
   def getLibraries(self):
@@ -20,5 +21,16 @@ class EagleBoard:
       libraries[library.name] = library
 
     return libraries
+
+  def addLibraries(self, newLibraries):
+    currentLibraries = self.getLibraries()
+
+    currentLibraries.update(newLibraries)
+    libraryNode = self.xml.find('./drawing/board/libraries')
+    libraryNode.clear()
+    for library in currentLibraries.values():
+      library = library.deepCopy()
+      libraryNode.append(library.xml)
+
 
 
