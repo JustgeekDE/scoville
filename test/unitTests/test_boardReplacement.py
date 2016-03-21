@@ -30,30 +30,19 @@ class BoardReplacementTest(TestCase):
     baseBoard = self.getBoard('singleDiode')
     replacementBoard = self.getBoard('singleLed')
 
-    baseBoard.replace('1N4004', replacementBoard)
+    baseBoard.replaceByPackage('DO41-10', replacementBoard)
     xml = baseBoard.toString()
 
     self.assertIn('<library name="led">', xml)
 
-  # def test_afterExchangeLibraryShouldBeInXML(self):
-  #   baseBoard = self.getSchematic('singleDiode')
-  #   replacementBoard = self.getSchematic('singleLed')
-  #
-  #   baseBoard.replace('R1N4004', replacementBoard)
-  #   xml = baseBoard.toString()
-  #
-  #   self.assertIn('<library name="led">', xml)
-  #
-  # def test_afterExchangingSinglePartItShouldBeIncluded(self):
-  #   baseBoard = self.getSchematic('singleDiode')
-  #   replacementBoard = self.getSchematic('singleLed')
-  #
-  #   baseBoard.replace('1N4004', replacementBoard)
-  #   xml = baseBoard.toString()
-  #
-  #   self.assertIn('D1-LED1', baseBoard.parts.keys())
-  #   self.assertIn('name="D1-LED1"', xml)
-  #   self.assertIn('part="D1-LED1"', xml)
+  def test_afterExchangingSinglePartItShouldBeIncluded(self):
+    baseBoard = self.getBoard('singleDiode')
+    replacementBoard = self.getBoard('singleLed')
+
+    baseBoard.replaceByPackage('DO41-10', replacementBoard)
+    xml = baseBoard.toString()
+
+    self.assertIn('<element name="LED1"', xml)
   #
   #
   # def test_afterExchangingMultiplePartsTheyShouldBeIncluded(self):

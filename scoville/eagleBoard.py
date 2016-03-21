@@ -10,8 +10,17 @@ class EagleBoard:
   def toString(self):
     return etree.tostring(self.xml, pretty_print=True)
 
-  def replace(self, partType, replacementSchematic):
+  def replaceByPackage(self, packageName, replacementSchematic):
     self.addLibraries(replacementSchematic.getLibraries())
+
+    oldParts = self.getPartsWithPackage(packageName)
+    if oldParts != None:
+      for part in oldParts:
+        parent = part.getparent()
+        parent.remove(part)
+        for newPart in replacementSchematic.getParts():
+          parent.append(newPart)
+
     pass
 
   def getLibraries(self):
@@ -33,4 +42,8 @@ class EagleBoard:
       libraryNode.append(library.xml)
 
 
+  def getPartsWithPackage(self, package):
+    return self.xml.findall(".//element[@package='{package}']".format(package=package))
 
+  def getParts(self):
+    return self.xml.findall(".//element")
