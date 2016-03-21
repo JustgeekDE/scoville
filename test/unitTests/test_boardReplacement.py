@@ -18,7 +18,7 @@ class ReplacementTest(TestCase):
 
   def test_readingAndWritingToFileShouldStayTheSame(self):
     self.maxDiff = None
-    inputData = resource_string('test', 'testRessources/replacementExamples/singleDiode.sch')
+    inputData = resource_string('test', 'testRessources/replacementExamples/singleDiode.brd')
     board = eagleBoard.EagleBoard(inputData)
 
     originalFile = self.prettifyXML(inputData)
