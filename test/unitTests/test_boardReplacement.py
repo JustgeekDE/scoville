@@ -5,7 +5,7 @@ from pkg_resources import resource_string
 from scoville import eagleBoard
 
 
-class ReplacementTest(TestCase):
+class BoardReplacementTest(TestCase):
   def getBoard(self, schematic):
     inputData = resource_string('test', 'testRessources/replacementExamples/' + schematic + '.brd')
     return eagleBoard.EagleBoard(inputData)

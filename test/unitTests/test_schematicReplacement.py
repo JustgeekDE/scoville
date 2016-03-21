@@ -5,7 +5,7 @@ from pkg_resources import resource_string
 from scoville import eagleSchematic
 
 
-class ReplacementTest(TestCase):
+class SchematicReplacementTest(TestCase):
   def getSchematic(self, schematic):
     inputData = resource_string('test', 'testRessources/replacementExamples/' + schematic + '.sch')
     return eagleSchematic.EagleSchematic(inputData)
