@@ -43,22 +43,18 @@ class BoardReplacementTest(TestCase):
     xml = baseBoard.toString()
 
     self.assertIn('<element name="D1-LED1"', xml)
-  #
-  #
-  # def test_afterExchangingMultiplePartsTheyShouldBeIncluded(self):
-  #   baseBoard = self.getSchematic('twoDiodes')
-  #   replacementBoard = self.getSchematic('singleLed')
-  #
-  #   baseBoard.replace('1N4004', replacementBoard)
-  #   xml = baseBoard.toString()
-  #
-  #   self.assertIn('D1-LED1', baseBoard.parts.keys())
-  #   self.assertIn('name="D1-LED1"', xml)
-  #   self.assertIn('part="D1-LED1"', xml)
-  #   self.assertIn('D2-LED1', baseBoard.parts.keys())
-  #   self.assertIn('name="D2-LED1"', xml)
-  #   self.assertIn('part="D2-LED1"', xml)
-  #
+
+
+  def test_afterExchangingMultiplePartsTheyShouldBeIncluded(self):
+    baseBoard = self.getBoard('twoDiodes')
+    replacementBoard = self.getBoard('singleLed')
+
+    baseBoard.replaceByPackage('DO41-10', replacementBoard)
+    xml = baseBoard.toString()
+
+    self.assertIn('<element name="D1-LED1"', xml)
+    self.assertIn('<element name="D2-LED1"', xml)
+
   # def test_afterExchangingComplexPartTheNewNetShouldBeIncluded(self):
   #   baseBoard = self.getSchematic('basicComplexSchematic')
   #   replacementBoard = self.getSchematic('basicTwoPartSchematic')

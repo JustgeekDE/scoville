@@ -16,9 +16,10 @@ class EagleBoard:
     oldParts = self.getPartsWithPackage(packageName)
     if oldParts != None:
       for part in oldParts:
+        newSchematic = replacementSchematic.deepCopy()
         partName = part.get('name')
-        replacementSchematic.prefixParts(partName + '-')
-        self._replaceSinglePart(part, replacementSchematic)
+        newSchematic.prefixParts(partName + '-')
+        self._replaceSinglePart(part, newSchematic)
 
     pass
 
@@ -63,4 +64,9 @@ class EagleBoard:
       connections = self.xml.findall(".//*[@element='{partName}']".format(partName=partName))
       for connection in connections:
         connection.set('element', newPartName)
+
+  def deepCopy(self):
+    originalXMLString = self.toString()
+    return EagleBoard(originalXMLString)
+
 
