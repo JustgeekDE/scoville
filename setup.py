@@ -8,5 +8,7 @@ setup(name='Scoville',
       author='Philip Peter',
       author_email='philip.peter@justgeek.de',
       url='https://github.com/JustgeekDE/scoville',
-      py_modules=['scoville/circuit', 'scoville/signal', 'scoville/spiceSimulator', 'scoville/eagleSchematic', 'scoville/arduinoTester'],
-     )
+      py_modules=['scoville/circuit', 'scoville/signal', 'scoville/spiceSimulator', 'scoville/arduinoTester',
+                  'scoville/eagleSchematic', 'scoville/eagleBoard', 'scoville/genericNodeTransformations',
+                  'scoville/schematicTransformations', 'scoville/boardTransformations'],
+      )
