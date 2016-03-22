@@ -16,12 +16,17 @@ class EagleBoard:
     oldParts = self.getPartsWithPackage(packageName)
     if oldParts != None:
       for part in oldParts:
-        parent = part.getparent()
-        parent.remove(part)
-        for newPart in replacementSchematic.getParts():
-          parent.append(newPart)
+        partName = part.get('name')
+        replacementSchematic.prefixParts(partName + '-')
+        self._replaceSinglePart(part, replacementSchematic)
 
     pass
+
+  def _replaceSinglePart(self, part, replacementSchematic):
+    parent = part.getparent()
+    parent.remove(part)
+    for newPart in replacementSchematic.getParts():
+      parent.append(newPart)
 
   def getLibraries(self):
     libraries = {}
@@ -47,3 +52,15 @@ class EagleBoard:
 
   def getParts(self):
     return self.xml.findall(".//element")
+
+  def prefixParts(self, prefix):
+    parts = self.getParts()
+    for part in parts:
+      partName = part.get('name')
+      newPartName = prefix+partName
+
+      part.set('name', newPartName)
+      connections = self.xml.findall(".//*[@element='{partName}']".format(partName=partName))
+      for connection in connections:
+        connection.set('element', newPartName)
+

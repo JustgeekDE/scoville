@@ -42,7 +42,7 @@ class BoardReplacementTest(TestCase):
     baseBoard.replaceByPackage('DO41-10', replacementBoard)
     xml = baseBoard.toString()
 
-    self.assertIn('<element name="LED1"', xml)
+    self.assertIn('<element name="D1-LED1"', xml)
   #
   #
   # def test_afterExchangingMultiplePartsTheyShouldBeIncluded(self):
