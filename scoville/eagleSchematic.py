@@ -293,7 +293,6 @@ class EagleSchematic:
         newName = oldPart.name + '-' + oldName
         net.set('name', newName)
         self.addNet(net)
-    pass
 
   def _replaceDocu(self, replacementSchematic):
     self.addDocu(replacementSchematic.getDocu())
