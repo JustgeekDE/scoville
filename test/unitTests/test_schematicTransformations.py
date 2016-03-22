@@ -5,6 +5,7 @@ from pkg_resources import resource_string
 
 from scoville import schematicTransformations
 from scoville import eagleSchematic
+from scoville import genericNodeTransformations
 
 
 class SchematicTransformationTest(TestCase):
@@ -34,7 +35,7 @@ class SchematicTransformationTest(TestCase):
     self.assertIn('<wire x1="35.02" y1="55.8" x2="29.94" y2="55.8"', xml)
 
   def test_rotationByQuarter(self):
-    transformation = schematicTransformations.SchematicRotation(90)
+    transformation = genericNodeTransformations.CoordinateRotation(90)
 
     (x, y) = transformation._rotateCoordinates((1, 0), 90)
     self.assertAlmostEqual(x, 0.0)
