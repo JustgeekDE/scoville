@@ -55,20 +55,19 @@ class BoardReplacementTest(TestCase):
     self.assertIn('<element name="D1-LED1"', xml)
     self.assertIn('<element name="D2-LED1"', xml)
 
-  # def test_afterExchangingComplexPartTheNewNetShouldBeIncluded(self):
-  #   baseBoard = self.getSchematic('basicComplexSchematic')
-  #   replacementBoard = self.getSchematic('basicTwoPartSchematic')
-  #
-  #   baseBoard.replace('SIMPLE_LED', replacementBoard)
-  #   xml = baseBoard.toString()
-  #
-  #   self.assertNotIn('<part name="P1"', xml)
-  #   self.assertNotIn('<instance part="P1"', xml)
-  #
-  #   self.assertIn('<pinref part="P1-LED1"', xml)
-  #   self.assertIn('<net name="P1-INT-1"', xml)
-  #
-  #
+  def test_afterExchangingComplexPartTheNewNetShouldBeIncluded(self):
+    baseBoard = self.getBoard('basicComplexSchematic')
+    replacementBoard = self.getBoard('basicTwoPartSchematic')
+
+    baseBoard.replaceByPackage('SIMPLE_LED', replacementBoard)
+    xml = baseBoard.toString()
+
+    self.assertNotIn('<element name="P1"', xml)
+
+    self.assertIn('<contactref element="P1-LED1"', xml)
+    self.assertIn('<signal name="P1-INT-1"', xml)
+
+
   # def test_afterExchangingComplexPartTheNewPartsShouldBeTranslated(self):
   #   baseBoard = self.getSchematic('basicComplexSchematicWith2Parts')
   #   replacementBoard = self.getSchematic('basicTwoPartSchematic')

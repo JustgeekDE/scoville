@@ -10,18 +10,19 @@ class EagleBoard:
   def toString(self):
     return etree.tostring(self.xml, pretty_print=True)
 
-  def replaceByPackage(self, packageName, replacementSchematic):
-    self.addLibraries(replacementSchematic.getLibraries())
+  def replaceByPackage(self, packageName, replacementBoard):
+    self.addLibraries(replacementBoard.getLibraries())
 
     oldParts = self.getPartsWithPackage(packageName)
     if oldParts != None:
       for part in oldParts:
-        newSchematic = replacementSchematic.deepCopy()
+        copiedBoard = replacementBoard.deepCopy()
         partName = part.get('name')
-        newSchematic.prefixParts(partName + '-')
-        self._replaceSinglePart(part, newSchematic)
 
-    pass
+        copiedBoard.prefixParts(partName + '-')
+
+        self._replaceSinglePart(part, copiedBoard)
+        self._replaceSignals(partName, copiedBoard)
 
   def _replaceSinglePart(self, part, replacementSchematic):
     parent = part.getparent()
@@ -68,5 +69,37 @@ class EagleBoard:
   def deepCopy(self):
     originalXMLString = self.toString()
     return EagleBoard(originalXMLString)
+
+  def _replaceSignals(self, partName, replacementBoard):
+    replacedSignals = []
+    contactRefs =  self.xml.findall(".//contactref[@element='{partName}']".format(partName=partName))
+    for refNode in contactRefs:
+      pad = refNode.get('pad')
+      replacementNet = replacementBoard.getSignal(pad)
+      if replacementNet != None:
+        for connection in replacementNet.getchildren():
+          refNode.getparent().append(connection)
+
+        refNode.getparent().remove(refNode)
+        replacedSignals.append(pad)
+
+    newSignals = replacementBoard.getSignals()
+    for signal in newSignals:
+      oldName = signal.get('name')
+      if oldName not in replacedSignals:
+        newName = partName + '-' + oldName
+        signal.set('name', newName)
+        self.addSignal(signal)
+
+  def addSignal(self, signalNode):
+    parent = self.xml.find(".//signals")
+    parent.append(signalNode)
+
+  def getSignals(self):
+    return self.xml.findall(".//signal")
+
+  def getSignal(self, signalName):
+    return self.xml.find(".//signal[@name='{signalName}']".format(signalName=signalName))
+
 
 
