@@ -62,6 +62,7 @@
                 <wire x1="20.32" y1="7.62" x2="20.32" y2="0" width="0.4064" layer="21" style="shortdash"/>
                 <wire x1="20.32" y1="0" x2="0" y2="0" width="0.4064" layer="21" style="shortdash"/>
                 <wire x1="0" y1="0" x2="0" y2="7.62" width="0.4064" layer="21" style="shortdash"/>
+                <text x="1.27" y="1.27" size="1.016" layer="21" ratio="15">LED</text>
             </plain>
             <libraries>
                 <library name="p.peter-leds">
@@ -326,4 +327,10 @@
             </signals>
         </board>
     </drawing>
+    <compatibility>
+        <note version="6.3" minversion="6.2.2" severity="warning">
+            Since Version 6.2.2 text objects can contain more than one line,
+            which will not be processed correctly with this version.
+        </note>
+    </compatibility>
 </eagle>

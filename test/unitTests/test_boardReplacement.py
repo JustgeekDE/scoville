@@ -68,14 +68,14 @@ class BoardReplacementTest(TestCase):
     self.assertIn('<signal name="P1-INT-1"', xml)
 
 
-  # def test_afterExchangingComplexPartTheNewPartsShouldBeTranslated(self):
-  #   baseBoard = self.getSchematic('basicComplexSchematicWith2Parts')
-  #   replacementBoard = self.getSchematic('basicTwoPartSchematic')
-  #
-  #   baseBoard.replace('SIMPLE_LED', replacementBoard)
-  #   xml = baseBoard.toString()
-  #
-  #   self.assertIn('<instance part="P1-LED1" gate="G$1" x="17.78" y="5.08"/>', xml)
-  #   self.assertIn('<instance part="P2-LED1" gate="G$1" x="30.48" y="15.24" rot="R270"/>', xml)
-  #   self.assertIn('<text x="35.56" y="22.86" size="1.778" layer="97" rot="R270">LED</text>', xml)
-  #
+  def test_afterExchangingComplexPartTheNewPartsShouldBeTranslated(self):
+    baseBoard = self.getBoard('basicComplexSchematicWith2Parts')
+    replacementBoard = self.getBoard('basicTwoPartSchematic')
+
+    baseBoard.replaceByPackage('SIMPLE_LED', replacementBoard)
+    xml = baseBoard.toString()
+
+    self.assertIn('<element name="P1-LED1" library="p.peter-leds" package="LED-5MM" value="" x="13.97" y="5.08"/>', xml)
+    self.assertIn('<element name="P2-LED1" library="p.peter-leds" package="LED-5MM" value="" x="26.67" y="17.78" rot="R270"/>', xml)
+    self.assertIn('<text x="24.13" y="27.94" size="1.016" layer="21" ratio="15" rot="R270">LED</text>', xml)
+

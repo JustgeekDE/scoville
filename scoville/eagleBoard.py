@@ -1,5 +1,26 @@
 from lxml import etree
 from eagleSchematic import EagleLibrary
+import boardTransformations
+
+class EagleBoardElement:
+  def __init__(self, node):
+    self.node = node
+
+  def getRotation(self):
+    rotation = self.node.get('rot')
+    if rotation != None:
+      return int(rotation[1:])
+    return 0
+
+  def getPosition(self):
+    position = (0,0)
+    x = float(self.node.get('x'))
+    y = float(self.node.get('y'))
+    return x,y
+
+  def getName(self):
+    return self.node.get('name')
+
 
 class EagleBoard:
   def __init__(self, xmlString):
@@ -16,11 +37,20 @@ class EagleBoard:
     oldParts = self.getPartsWithPackage(packageName)
     if oldParts != None:
       for part in oldParts:
+        eaglePart = EagleBoardElement(part)
+
         copiedBoard = replacementBoard.deepCopy()
-        partName = part.get('name')
+        partName = eaglePart.getName()
+
+        rotation = boardTransformations.BoardRotation(eaglePart.getRotation())
+        translation = boardTransformations.BoardTranslation(eaglePart.getPosition())
+
+        copiedBoard = rotation.transform(copiedBoard)
+        copiedBoard = translation.transform(copiedBoard)
 
         copiedBoard.prefixParts(partName + '-')
 
+        self._replaceDocu(copiedBoard)
         self._replaceSinglePart(part, copiedBoard)
         self._replaceSignals(partName, copiedBoard)
 
@@ -101,5 +131,15 @@ class EagleBoard:
   def getSignal(self, signalName):
     return self.xml.find(".//signal[@name='{signalName}']".format(signalName=signalName))
 
+  def _replaceDocu(self, replacementBoard):
+    self.addDocu(replacementBoard.getDocu())
+
+  def getDocu(self):
+    return self.xml.findall(".//plain/")
+
+  def addDocu(self, newDocu):
+    docuNode = self.xml.find(".//plain")
+    for newNode in newDocu:
+      docuNode.append(newNode)
 
 

@@ -297,6 +297,13 @@ class EagleSchematic:
   def _replaceDocu(self, replacementSchematic):
     self.addDocu(replacementSchematic.getDocu())
 
+  def getDocu(self):
+    return self.xml.findall(".//plain/")
+
+  def addDocu(self, newDocu):
+    docuNode = self.xml.find(".//plain")
+    for newNode in newDocu:
+      docuNode.append(newNode)
 
   def getNets(self):
     return self.xml.findall(".//net")
@@ -311,16 +318,6 @@ class EagleSchematic:
   def deepCopy(self):
     originalXMLString = self.toString()
     return EagleSchematic(originalXMLString)
-
-  def getDocu(self):
-    return self.xml.findall(".//plain/")
-
-  def addDocu(self, newDocu):
-    docuNode = self.xml.find(".//plain")
-    for newNode in newDocu:
-      docuNode.append(newNode)
-
-
 
   @staticmethod
   def addIfNotNone(collection, value):
