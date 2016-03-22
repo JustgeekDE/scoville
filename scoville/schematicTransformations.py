@@ -58,9 +58,6 @@ class SchematicRotation:
       element.set('rot', 'R'+str(rotation))
     return element
 
-
-
-
 class SchematicTranslation:
   def __init__(self, translation):
     self.translation = translation

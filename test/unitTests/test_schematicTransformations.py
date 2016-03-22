@@ -7,16 +7,10 @@ from scoville import schematicTransformations
 from scoville import eagleSchematic
 
 
-class TransformationTest(TestCase):
+class SchematicTransformationTest(TestCase):
   def getSchematic(self, schematic):
     inputData = resource_string('test', 'testRessources/replacementExamples/' + schematic + '.sch')
     return eagleSchematic.EagleSchematic(inputData)
-
-  def prettifyXML(self, inputData):
-    parser = etree.XMLParser(remove_blank_text=True)
-    parsedXML = etree.fromstring(inputData, parser)
-    prettyXML = etree.tostring(parsedXML, pretty_print=True)
-    return prettyXML
 
   def test_movingSchematicShouldWork(self):
     transformation = schematicTransformations.SchematicTranslation((2, 5))
