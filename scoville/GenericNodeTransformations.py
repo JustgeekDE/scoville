@@ -1,8 +1,4 @@
 import math
-from lxml import etree
-
-import eagleBoard
-
 
 class NodeRotation:
   def __init__(self, angle):

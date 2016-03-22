@@ -7,7 +7,6 @@ import genericNodeTransformations
 
 class SchematicRotation:
   def __init__(self, angle):
-    self.angle = angle
     self.coordinateTransform = genericNodeTransformations.CoordinateRotation(angle)
     self.nodeTransform = genericNodeTransformations.NodeRotation(angle)
 
