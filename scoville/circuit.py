@@ -34,11 +34,14 @@ class Circuit:
     self.inspectedElements.append("i(" + signal + ")")
 
   def run(self, duration=5, steps=0.01):
+    circuit = self.getSimulationCircuit()
+    self.simulationResult = self.simulator.run(circuit, self.inspectedElements, duration, steps)
+
+  def getSimulationCircuit(self):
     strippedData = self.removeParts(self.originalData, self.usedParts)
     mocks = self.getMocks()
-
     circuit = mocks + strippedData
-    self.simulationResult = self.simulator.run(circuit, self.inspectedElements, duration, steps)
+    return circuit
 
   def removeParts(self, circuit, partsToKeep):
     if len(partsToKeep) < 1:

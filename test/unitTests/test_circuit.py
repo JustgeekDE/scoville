@@ -7,6 +7,7 @@ from test.assertionMatchers import AnyStringWith, Any, AnyStringWithOut, AnyList
 from scoville.circuit import Circuit
 from scoville.signal import SignalWithResistance
 from scoville.spiceSimulator import SpiceSimulator
+from scoville.parts import GenericVoltageSource
 
 __author__ = 'ppeter'
 
@@ -75,6 +76,16 @@ class TestCircuit(TestCase):
 
     simulator.run.assert_called_once_with(AnyStringWith("VmockinA inAMockR GND dc 5.0V ac 0V"), Any(), Any(), Any())
     simulator.run.assert_called_once_with(AnyStringWith("RmockinA inAMockR inA 1000"), Any(), Any(), Any())
+
+  def testShouldInsertVoltageSourcesCorrecctly(self):
+    (circuit, simulator) = self.getExampleCircuit()
+
+    circuit.setSignal(GenericVoltageSource('supply', '_VP', '_VN', 5.0))
+    simulationCircuit = circuit.getSimulationCircuit()
+
+    self.assertIn("Vsupply _VP GND dc 5.0V ac 0V", simulationCircuit)
+    self.assertIn("Rsupply _VN GND 0 ", simulationCircuit)
+
 
   def testShouldAllowSingleVoltageInspection(self):
     (circuit, simulator) = self.getExampleCircuit()
