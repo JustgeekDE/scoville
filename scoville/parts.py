@@ -7,7 +7,7 @@ class GenericVoltageSource:
     self.resistance = 0
 
   def getSpiceDefinition(self):
-    voltageSource = "V{0} {0} GND dc {1}V ac 0V\n".format(self.netHigh, self.voltage)
+    voltageSource = "V{0} {1} GND dc {2}V ac 0V\n".format(self.name, self.netHigh, self.voltage)
     resistor = "R{0} {1} GND {2}".format(self.name, self.netGND, self.resistance)
     return voltageSource + resistor
 
