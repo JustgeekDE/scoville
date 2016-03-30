@@ -84,7 +84,7 @@ class TestCircuit(TestCase):
     simulationCircuit = circuit.getSimulationCircuit()
 
     self.assertIn("Vsupply _VP GND dc 5.0V ac 0V", simulationCircuit)
-    self.assertIn("Rsupply _VN GND 0 ", simulationCircuit)
+    self.assertIn("RsupplyR _VN GND 0", simulationCircuit)
 
 
   def testShouldAllowSingleVoltageInspection(self):
