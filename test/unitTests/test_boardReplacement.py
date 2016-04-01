@@ -79,3 +79,13 @@ class BoardReplacementTest(TestCase):
     self.assertIn('<element name="P2-LED1" library="p.peter-leds" package="LED-5MM" value="" x="26.67" y="17.78" rot="R270"/>', xml)
     self.assertIn('<text x="24.13" y="27.94" size="1.016" layer="21" ratio="15" rot="R270">LED</text>', xml)
 
+
+  def test_afterExchangingLibrariesShouldBeMerged(self):
+    baseBoard = self.getBoard('singleGateFromLibrary')
+    replacementBoard = self.getBoard('differentGateFromLibrary')
+
+    baseBoard.replaceByPackage('AND', replacementBoard)
+    xml = baseBoard.toString()
+
+    self.assertIn('<package name="NAND"', xml)
+    self.assertIn('<package name="OR"', xml)

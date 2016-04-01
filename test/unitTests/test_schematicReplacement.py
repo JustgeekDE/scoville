@@ -94,3 +94,13 @@ class SchematicReplacementTest(TestCase):
     self.assertIn('<instance part="P2-LED1" gate="G$1" x="30.48" y="15.24" rot="R270"/>', xml)
     self.assertIn('<text x="35.56" y="22.86" size="1.778" layer="97" rot="R270">LED</text>', xml)
 
+  def test_afterExchangingLibrariesShouldBeMerged(self):
+    baseSchematic = self.getSchematic('singleGateFromLibrary')
+    replacementSchematic = self.getSchematic('differentGateFromLibrary')
+
+    baseSchematic.replace('AND', replacementSchematic)
+    xml = baseSchematic.toString()
+
+    self.assertIn('<package name="NAND"', xml)
+    self.assertIn('<package name="OR"', xml)
+

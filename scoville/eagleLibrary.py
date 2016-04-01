@@ -8,6 +8,15 @@ def parseLibraries(rootNode):
 
   return libraries
 
+def mergeLibraryLists(libraryList, newLibraries):
+  for name in newLibraries:
+    library = newLibraries[name]
+    if name in libraryList.keys():
+      libraryList[name].merge(library)
+    else:
+      libraryList[name] = library
+  return libraryList
+
 class EagleLibrary:
   def __init__(self, libraryNode):
     self.name = libraryNode.get('name')

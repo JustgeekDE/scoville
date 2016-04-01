@@ -223,7 +223,8 @@ class EagleSchematic:
 
 
   def _replaceLibraries(self, newLibraries):
-    self.libraries.update(newLibraries)
+    self.libraries = eagleLibrary.mergeLibraryLists(self.libraries, newLibraries)
+
     libraryNode = self.xml.find('./drawing/schematic/libraries')
     libraryNode.clear()
     for library in self.libraries.values():

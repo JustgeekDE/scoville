@@ -64,7 +64,8 @@ class EagleBoard:
   def addLibraries(self, newLibraries):
     currentLibraries = self.getLibraries()
 
-    currentLibraries.update(newLibraries)
+    self.libraries = eagleLibrary.mergeLibraryLists(currentLibraries, newLibraries)
+
     libraryNode = self.xml.find('./drawing/board/libraries')
     libraryNode.clear()
     for library in currentLibraries.values():
