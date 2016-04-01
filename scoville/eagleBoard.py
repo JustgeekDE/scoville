@@ -1,6 +1,7 @@
 from lxml import etree
-from eagleSchematic import EagleLibrary
+
 import boardTransformations
+import eagleLibrary
 
 class EagleBoardElement:
   def __init__(self, node):
@@ -59,14 +60,6 @@ class EagleBoard:
     parent.remove(part)
     for newPart in replacementSchematic.getParts():
       parent.append(newPart)
-
-  def getLibraries(self):
-    libraries = {}
-    for libraryNode in self.xml.findall('.//library'):
-      library = EagleLibrary(libraryNode)
-      libraries[library.name] = library
-
-    return libraries
 
   def addLibraries(self, newLibraries):
     currentLibraries = self.getLibraries()
@@ -133,6 +126,9 @@ class EagleBoard:
 
   def _replaceDocu(self, replacementBoard):
     self.addDocu(replacementBoard.getDocu())
+
+  def getLibraries(self):
+    return eagleLibrary.parseLibraries(self.xml)
 
   def getDocu(self):
     return self.xml.findall(".//plain/")

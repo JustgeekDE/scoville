@@ -1,6 +1,7 @@
 from unittest import TestCase
 from pkg_resources import resource_string
 
+import eagleLibrary
 from scoville import eagleBoard
 
 

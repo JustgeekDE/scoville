@@ -1,7 +1,7 @@
-import copy
 from lxml import etree
 
 import schematicTransformations
+import eagleLibrary
 
 class SchematicParsingException(Exception):
   pass
@@ -144,18 +144,6 @@ class EaglePart:
       position = (x,y)
     return position
 
-class EagleLibrary:
-  def __init__(self, libraryNode):
-    self.name = libraryNode.get('name')
-    self.xml = libraryNode
-    pass
-
-  def deepCopy(self):
-    originalXMLString = etree.tostring(self.xml, pretty_print=True)
-    node = etree.fromstring(originalXMLString, etree.XMLParser(remove_blank_text=True))
-    return EagleLibrary(node)
-
-
 
 class EagleSchematic:
   def __init__(self, xmlString):
@@ -168,16 +156,8 @@ class EagleSchematic:
     self.layers = tree.find('./drawing/layers')
 
     schematic = tree.find('./drawing/schematic')
-    self.libraries = self._parseLibraries(schematic)
+    self.libraries = eagleLibrary.parseLibraries(self.xml)
     self.parts = self._parseParts(schematic)
-
-  def _parseLibraries(self, rootNode):
-    libraries = {}
-    for libraryNode in rootNode.findall('.//library'):
-      library = EagleLibrary(libraryNode)
-      libraries[library.name] = library
-
-    return libraries
 
   def _parseParts(self, rootNode):
     parts = {}
@@ -314,6 +294,9 @@ class EagleSchematic:
   def addNet(self, netNode):
     parent = self.xml.find(".//nets")
     parent.append(netNode)
+
+  def getLibraries(self):
+    return self.libraries
 
   def deepCopy(self):
     originalXMLString = self.toString()

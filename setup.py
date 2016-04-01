@@ -10,7 +10,7 @@ setup(name='Scoville',
       url='https://github.com/JustgeekDE/scoville',
       py_modules=['scoville/circuit', 'scoville/signal', 'scoville/spiceSimulator', 'scoville/parts',
                   'scoville/arduinoTester',
-                  'scoville/eagleSchematic', 'scoville/eagleBoard',
+                  'scoville/eagleSchematic', 'scoville/eagleBoard', 'scoville/eagleLibrary',
                   'scoville/genericNodeTransformations',
                   'scoville/schematicTransformations', 'scoville/boardTransformations'],
       )
