@@ -79,9 +79,13 @@ class EaglePart:
 
     netList = ''
     for pin in spiceOrder:
-      netList += self.netMap[pin] + ' '
+      net = self.netMap[pin]
+      net = net.replace('-', '_')
+      netList += net + ' '
 
-    return spicePrefix + self.name + ' ' + netList + self.value
+    name = self.name.replace('-', '_')
+
+    return spicePrefix + name + ' ' + netList + self.value
 
   def getSpiceModel(self):
     spiceModel = self.getAttribute("SV_SPICE_MODEL")
