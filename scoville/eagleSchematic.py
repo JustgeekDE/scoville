@@ -81,6 +81,7 @@ class EaglePart:
     for pin in spiceOrder:
       net = self.netMap[pin]
       net = net.replace('-', '_')
+      net = net.replace('+', 'P')
       netList += net + ' '
 
     name = self.name.replace('-', '_')
