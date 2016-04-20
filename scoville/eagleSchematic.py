@@ -107,6 +107,8 @@ class EaglePart:
     voltage = self.devicesetName
     name = voltage.replace('+', 'P').replace('-', 'M')
     connection = ' '.join(self.netMap.values())
+    connection = connection.replace('-', '_')
+    connection = connection.replace('+', 'P')
 
     return 'V' + name + ' ' + connection + ' GND dc ' + voltage + ' ac 0V'
 
