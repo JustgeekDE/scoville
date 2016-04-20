@@ -81,7 +81,6 @@ class EaglePart:
     for pin in spiceOrder:
       net = self.netMap[pin]
       net = net.replace('-', '_')
-      net = net.replace('+', 'P')
       netList += net + ' '
 
     name = self.name.replace('-', '_')
@@ -108,7 +107,6 @@ class EaglePart:
     name = voltage.replace('+', 'P').replace('-', 'M')
     connection = ' '.join(self.netMap.values())
     connection = connection.replace('-', '_')
-    connection = connection.replace('+', 'P')
 
     return 'V' + name + ' ' + connection + ' GND dc ' + voltage + ' ac 0V'
 
