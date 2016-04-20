@@ -213,6 +213,27 @@ class EagleSchematic:
 
     pass
 
+  def replaceByPackage(self, packageName, replacementSchematic):
+    self._replaceLibraries(replacementSchematic.libraries)
+
+    for oldPart in self.parts.values():
+      if oldPart.devicesetName == deviceSet:
+        newSchematic = replacementSchematic.deepCopy()
+
+        rotation = schematicTransformations.SchematicRotation(oldPart.getRotation())
+        translation = schematicTransformations.SchematicTranslation(oldPart.getPosition())
+
+        newSchematic = rotation.transform(newSchematic)
+        newSchematic = translation.transform(newSchematic)
+
+        newSchematic.prefixParts(oldPart.name + '-')
+
+        self._replaceDocu(newSchematic)
+        self._replaceSinglePart(newSchematic, oldPart)
+        self._replaceNets(newSchematic, oldPart)
+
+    pass
+
   def prefixParts(self, prefix):
     for part in self.parts.values():
       oldName = part.name
