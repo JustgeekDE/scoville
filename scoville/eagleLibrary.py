@@ -34,9 +34,10 @@ class EagleLibrary:
 
   def merge(self, otherLibrary):
     if otherLibrary.name == self.name:
-      self._mergePackages(otherLibrary.getPackages())
-      self._mergeSymbols(otherLibrary.getSymbols())
-      self._mergeDevices(otherLibrary.getDeviceSets())
+      libCopy = otherLibrary.deepCopy()
+      self._mergePackages(libCopy.getPackages())
+      self._mergeSymbols(libCopy.getSymbols())
+      self._mergeDevices(libCopy.getDeviceSets())
 
   def _mergePackages(self, otherPackages):
     ourPackages = self.getPackages()
